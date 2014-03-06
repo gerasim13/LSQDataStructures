@@ -1,6 +1,6 @@
 //
 //  LSQBase.c
-//  LoopsequeDJ
+//  LSQDataStructures
 //
 //  Created by Павел Литвиненко on 26.08.13.
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
@@ -10,42 +10,86 @@
 #include <stdio.h>
 #include <libkern/OSAtomic.h>
 
+//________________________________________________________________________________________
+
+#pragma mark - Data Structures
+
+// Base type declaration
+typedef struct LSQBaseType
+{
+    LSQBaseType_Data data;
+    LSQBaseVtableRef vtable;
+} LSQBaseType;
+
+//________________________________________________________________________________________
+
 #pragma mark - Base Functions
 
-LSQTypeRef LSQTypeNew(LSQVTableRef vtable)
+LSQBaseTypeRef NewLSQBaseType(LSQBaseVtableRef vtable, void(*dealloc_callback)(void*))
 {
     // Allocate memory
-    struct base_type *self = LSQAllocatorAllocType(base_type);
+    LSQBaseType *self = LSQAllocatorAllocType(LSQBaseType);
     // Set properties
-    self->vtable    = vtable;
-    self->refcount  = 0;
-    self->version   = 0;
-    return (LSQTypeRef)self;
+    self->vtable        = vtable;
+    self->data.dealloc  = dealloc_callback;
+    self->data.refcount = 0;
+    self->data.version  = 0;
+    self->data.userdata = self;
+    return self;
 }
 
-void* LSQBaseRetain(void* self)
+void* LSQBaseRetain(LSQBaseTypeRef self)
 {
     bool success = false;
     // Increment counter
     while (!success)
     {
-        success = OSAtomicIncrement32(&((LSQTypeRef)self)->refcount);
+        success = OSAtomicIncrement32(&(self->data.refcount));
+    }
+    // Execute callback
+    if (self->vtable != NULL && self->vtable->retain != NULL)
+    {
+        self = self->vtable->retain(self->data.userdata);
     }
     // Return object
     return self;
 }
 
-void LSQBaseRelease(void* self)
+void LSQBaseRelease(LSQBaseTypeRef self)
 {
     bool success = false;
     // Decrement counter
     while (!success)
     {
-        success = OSAtomicDecrement32(&((LSQTypeRef)self)->refcount);
+        success = OSAtomicDecrement32(&(self->data.refcount));
+    }
+    // Execute release callback
+    if (self->vtable != NULL && self->vtable->release != NULL)
+    {
+        self->vtable->release(self->data.userdata);
+    }
+    // Execute deallock
+    if (self->data.refcount <= 0)
+    {
+        LSQBaseDealloc(self);
     }
 }
 
-void LSQBaseDealloc(void* self)
+void LSQBaseDealloc(LSQBaseTypeRef self)
 {
+    if (self->data.dealloc != NULL)
+    {
+        self->data.dealloc(self->data.userdata);
+    }
     LSQAllocatorDealloc(self);
+}
+
+int32_t LSQBaseGetRefCount(LSQBaseTypeRef self)
+{
+    return self->data.refcount;
+}
+
+void LSQBaseSetUserdata(LSQBaseTypeRef self, void* data)
+{
+    self->data.userdata = data;
 }

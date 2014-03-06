@@ -1,6 +1,6 @@
 //
 //  LSQArray.c
-//  LoopsequeDJ
+//  LSQDataStructures
 //
 //  Created by Павел Литвиненко on 27.10.13.
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
@@ -10,498 +10,354 @@
 #include <stdio.h>
 #include <libkern/OSAtomic.h>
 
-const struct LSQArrayCallbacks kLSQArrayCFCallbacks = { CFRetain, CFRelease };
+//________________________________________________________________________________________
 
-#pragma mark - Base Functions
+#pragma mark - Data Structures
 
-void* LSQArrayRetain_Internal(void* self)
+// Array data
+typedef struct LSQArray
 {
-    LSQArray _self = (LSQArray)self;
-    return LSQSuperRetain(_self);
-}
+    LSQBaseTypeRef    base;
+    LSQBaseVtableRef  callbacks;
+    LSQArrayVtableRef vtable;
+    LSQArray_Data     data;
+} LSQArray;
 
-void LSQArrayRelease_Internal(void* self)
+// Error codes
+enum
 {
-    LSQArray _self = (LSQArray)self;
-    LSQSuperRelease(_self);
-}
+    LSQArrayError_InvalidArgs    = 999999L << 1,
+    LSQArrayError_OutOfMemory    = 999999L << 2,
+    LSQArrayError_IndexOutBounds = 999999L << 3,
+    LSQArrayError_ArrayNotInit   = 999999L << 4
+};
 
-void LSQArrayDealloc_Internal(void* self)
-{
-    LSQArray _self = (LSQArray)self;
-    // Release elements
-    if (_self->remove_all != NULL)
-    {
-        _self->remove_all(_self);
-    }
-    LSQBaseDealloc(_self->elements);
-    // Dealloc super
-    LSQSuperDealloc(_self);
-}
+//________________________________________________________________________________________
 
 #pragma mark - Hidden Functions
 
-// Return error code for insert function
-LSQError LSQArrayInsertErrorCode(LSQArray array, CFIndex index, LSQNode node)
+OSStatus insert_at_index_check(LSQArrayRef array, CFIndex index, LSQNodeRef node)
 {
-    LSQError error;
+    // Return error code for insert function
     if (array == NULL || node == NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
+        return LSQArrayError_InvalidArgs;
     }
-    else if (index >= array->capacity)
+    else if (index >= array->data.capacity)
     {
-        LSQErrorMake(&error, LSQArrayError_IndexOutBounds);
+        return LSQArrayError_IndexOutBounds;
     }
-    else if (array->elements == NULL)
+    else if (array->data.elements == NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_ArrayNotInit);
+        return LSQArrayError_ArrayNotInit;
     }
-    else
-    {
-        LSQErrorMake(&error, LSQArrayError_NoError);
-    }
-    return error;
+    return noErr;
 }
 
-// Return error code for remove function
-LSQError LSQArrayRemoveErrorCode(LSQArray array, CFIndex index)
+OSStatus remove_at_index_check(LSQArrayRef array, CFIndex index)
 {
-    LSQError error;
+    // Return error code for remove function
     if (array == NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
+        return LSQArrayError_InvalidArgs;
     }
-    else if (index > array->capacity)
+    else if (index > array->data.capacity)
     {
-        LSQErrorMake(&error, LSQArrayError_IndexOutBounds);
+        return LSQArrayError_IndexOutBounds;
     }
-    else if (array->elements == NULL)
+    else if (array->data.elements == NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_ArrayNotInit);
+        return LSQArrayError_ArrayNotInit;
     }
-    else
-    {
-        LSQErrorMake(&error, LSQArrayError_NoError);
-    }
-    return error;
+    return noErr;
 }
 
-// Return error code for remove function
-LSQError LSQArrayRemoveAllErrorCode(LSQArray array)
+OSStatus remove_all_check(LSQArrayRef array)
 {
-    LSQError error;
+    // Return error code for remove all function
     if (array == NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
+        return LSQArrayError_InvalidArgs;
     }
-    else if (array->elements == NULL)
+    else if (array->data.elements == NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_ArrayNotInit);
+        return LSQArrayError_ArrayNotInit;
     }
-    else
-    {
-        LSQErrorMake(&error, LSQArrayError_NoError);
-    }
-    return error;
+    return noErr;
 }
 
-// Return error code for get function
-LSQError LSQArrayGetErrorCode(LSQArray array, CFIndex index)
+OSStatus get_node_at_index_check(LSQArrayRef array, CFIndex index)
 {
-    LSQError error;
+    // Return error code for get function
     if (array == NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
+        return LSQArrayError_InvalidArgs;
     }
-    else if (index < 0 || index > array->capacity)
+    else if (index < 0 || index > array->data.capacity)
     {
-        LSQErrorMake(&error, LSQArrayError_IndexOutBounds);
+        return LSQArrayError_IndexOutBounds;
     }
-    else if (array->elements == NULL)
+    else if (array->data.elements == NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_ArrayNotInit);
+        return LSQArrayError_ArrayNotInit;
     }
-    else
-    {
-        LSQErrorMake(&error, LSQArrayError_NoError);
-    }
-    return error;
+    return noErr;
 }
 
-// Try to insert item at index
-bool LSQArrayTryInsertNode(LSQArray array, CFIndex index, LSQNode node)
+bool try_insert_node(LSQArrayRef array, CFIndex index, LSQNodeRef node)
 {
-    // Keep trying
-    while (true)
+    // Try to insert item at index
+    bool success= false;
+    while (!success)
     {
-        LSQNode old = array->elements[index];
+        LSQNodeRef old = array->data.elements[index];
         // Remove old node
-        if (old != NULL && old->data != NULL && array->remove_node != NULL)
+        if (old != NULL && array->vtable->remove_node != NULL)
         {
-            array->remove_node(array, index);
+            array->vtable->remove_node(array, index);
         }
         // Insert new node
-        if (old == array->elements[index])
+        if (old == array->data.elements[index])
         {
-            OSAtomicCompareAndSwapPtr(old, node, (void* volatile*)&array->elements[index]);
-        }
-        // Break loop
-        if (array->elements[index] == node)
-        {
-            break;
+            if (node != NULL)
+            {
+                LSQNodeRetain(node);
+            }
+            success = OSAtomicCompareAndSwapPtr(old, node, (void* volatile*)&array->data.elements[index]);
         }
     }
-    return true;
+    return (array->data.elements[index] == node);
 }
 
-// Try to remove item at index
-bool LSQArrayTryRemoveNode(LSQArray array, CFIndex index)
+bool try_remove_node(LSQArrayRef array, CFIndex index)
 {
-    // Keep trying
-    while (true)
+    // Try to remove item at index
+    bool success= false;
+    while (!success)
     {
-        LSQNode old = array->elements[index];
-        // Remove old node
-        if (old == array->elements[index])
+        LSQNodeRef node = array->data.elements[index];
+        // Remove node
+        if (node == array->data.elements[index])
         {
-            OSAtomicCompareAndSwapPtr(old, NULL, (void* volatile*)&array->elements[index]);
-        }
-        // Release old node
-        if (old != NULL && array->node_release != NULL)
-        {
-            array->node_release(array, old);
-        }
-        // Break loop
-        if (array->elements[index] == NULL)
-        {
-            break;
+            if (node != NULL)
+            {
+                LSQNodeRelease(node);
+            }
+            success = OSAtomicCompareAndSwapPtr(node, NULL, (void* volatile*)&array->data.elements[index]);
         }
     }
-    return true;
+    return (array->data.elements[index] == NULL);
 }
 
-LSQNode LSQArrayUpdateNodeIndexAndReturn(LSQNode node, CFIndex index)
-{
-    if (node != NULL && OSAtomicCompareAndSwapLong(node->index, index, &node->index))
-    {
-        return node;
-    }
-    // Return node anyway
-    return node;
-}
+//________________________________________________________________________________________
 
 #pragma mark - Private Functions
 
-LSQError insert_node(void* self, CFIndex index, LSQNode node)
+OSStatus insert_node(LSQArrayRef self, CFIndex index, LSQNodeRef node)
 {
-    if (self != NULL)
+    OSStatus status;
+    if ((status = insert_at_index_check(self, index, node)) != noErr)
     {
-        LSQArray array = (LSQArray)self;
-        LSQError error = LSQArrayInsertErrorCode(array, index, node);
-        switch (error.code)
-        {
-            case LSQArrayError_InvalidArgs:
-            case LSQArrayError_ArrayNotInit:
-            case LSQArrayError_IndexOutBounds:
-            {
-                LSQErrorLog(&error);
-                break;
-            }
-            default:
-            {
-                // Insert new node at index
-                if (LSQArrayTryInsertNode(array, index, node) && index >= array->count)
-                {
-                    bool success = false;
-                    // Update count
-                    while (!success)
-                    {
-                        success = OSAtomicIncrement32(&array->count);
-                    }
-                }
-                break;
-            }
-        }
-        return error;
+        return status;
     }
-    return LSQErrorNULL;
-}
-
-LSQError remove_node(void* self, CFIndex index)
-{
-    if (self != NULL)
+    // Insert new node at index
+    if (try_insert_node(self, index, node))
     {
-        LSQArray array = (LSQArray)self;
-        LSQError error = LSQArrayRemoveErrorCode(array, index);
-        switch (error.code)
+        // Update count
+        bool success = false;
+        while (!success)
         {
-            case LSQArrayError_InvalidArgs:
-            case LSQArrayError_ArrayNotInit:
-            {
-                LSQErrorLog(&error);
-                break;
-            }
-            default:
-            {
-                // Try to remove node
-                if (array->elements[index] != NULL && LSQArrayTryRemoveNode(array, index))
-                {
-                    if (array->count > 1)
-                    {
-                        bool success = false;
-                        // Update count
-                        while (!success)
-                        {
-                            success = OSAtomicDecrement32(&array->count);
-                        }
-                    }
-                    else
-                    {
-                        array->count = 0;
-                    }
-                }
-                break;
-            }
-        }
-        return error;
-    }
-    return LSQErrorNULL;
-}
-
-LSQError remove_all(void* self)
-{
-    if (self != NULL)
-    {
-        LSQArray array = (LSQArray)self;
-        LSQError error = LSQArrayRemoveAllErrorCode(array);
-        switch (error.code)
-        {
-            case LSQArrayError_InvalidArgs:
-            case LSQArrayError_ArrayNotInit:
-            {
-                LSQErrorLog(&error);
-                break;
-            }
-            default:
-            {
-                // Iterate over all elements
-                for (CFIndex i = array->count; i >= 0; --i)
-                {
-                    array->remove_node(array, i);
-                }
-                break;
-            }
-        }
-        return error;
-    }
-    return LSQErrorNULL;
-}
-
-LSQNode array_get_node(void* self, CFIndex index)
-{
-    if (self != NULL)
-    {
-        LSQArray array = (LSQArray)self;
-        LSQError error = LSQArrayGetErrorCode(array, index);
-        switch (error.code)
-        {
-            case LSQArrayError_InvalidArgs:
-            case LSQArrayError_IndexOutBounds:
-            case LSQArrayError_ArrayNotInit:
-            {
-                LSQErrorLog(&error);
-                break;
-            }
-            default:
-            {
-                return LSQArrayUpdateNodeIndexAndReturn(array->elements[index], index);
-            }
+            success = OSAtomicIncrement32(&self->data.count);
         }
     }
-    return NULL;
+    return noErr;
 }
 
-void block_enumerate(void* self, CFRange range, LSQArrayEnumerateBlock block)
+OSStatus remove_node(LSQArrayRef self, CFIndex index)
+{
+    OSStatus status;
+    if ((status = remove_at_index_check(self, index)) != noErr)
+    {
+        return status;
+    }
+    // Try to remove node
+    if (try_remove_node(self, index))
+    {
+        // Update count
+        bool success = false;
+        while (!success && self->data.count >= 1)
+        {
+            success = OSAtomicDecrement32(&self->data.count);
+        }
+    }
+    return noErr;
+}
+
+OSStatus remove_all(LSQArrayRef self)
+{
+    OSStatus status;
+    if ((status = remove_all_check(self)) != noErr)
+    {
+        return status;
+    }
+    // Iterate over all elements
+    if (self->data.count > 0 && self->vtable->remove_node != NULL)
+    {
+        for (CFIndex i = self->data.count; i >= 0; --i)
+        {
+            self->vtable->remove_node(self, i);
+        }
+    }
+    return noErr;
+}
+
+OSStatus array_get_node(LSQArrayRef self, CFIndex index, LSQNodeRef* outNode)
+{
+    OSStatus status;
+    if ((status = get_node_at_index_check(self, index)) != noErr)
+    {
+        return status;
+    }
+    // Get node
+    *outNode = self->data.elements[index];
+    LSQNodeSetIndex(*outNode, index);
+    return noErr;
+}
+
+void block_enumerate(LSQArrayRef self, CFRange range, LSQArrayBlock block)
 {
     if (self != NULL)
     {
-        LSQArray array = (LSQArray)self;
         for (CFIndex i = range.location; i < range.length; ++i)
         {
-            LSQNode node = array->get_node(array, i);
-            if (node != NULL)
+            LSQNodeRef node;
+            if (self->vtable->get_node(self, i, &node) == noErr)
             {
-                block(node->data, i);
+                block(LSQNodeGetContent(node), i);
             }
         }
     }
 }
 
-LSQNode array_node_retain(void* self, LSQNode node)
-{
-    if (self != NULL && node != NULL && node->data != NULL)
-    {
-        LSQArray array = (LSQArray)self;
-        if (array->callbacks != NULL && array->callbacks->retain_callback != NULL)
-        {
-            array->callbacks->retain_callback(node->data);
-        }
-        LSQNodeRetain(node);
-    }
-    return NULL;
-}
+//________________________________________________________________________________________
 
-void array_node_release(void* self, LSQNode node)
-{
-    if (self != NULL && node != NULL && node->data != NULL)
-    {
-        LSQArray array = (LSQArray)self;
-        if (array->callbacks != NULL && array->callbacks->release_callback != NULL)
-        {
-            array->callbacks->release_callback(node->data);
-        }
-        LSQNodeRelease(node);
-    }
-}
+static const struct LSQArrayVtable kLSQArrayDefaultVtable = {
+    &insert_node,
+    &remove_node,
+    &remove_all,
+    &array_get_node,
+    &block_enumerate
+};
 
-#pragma mark - Public functions
+//________________________________________________________________________________________
 
-LSQArray LSQArrayMake(CFIndex capacity, const struct LSQArrayCallbacks *callbacks)
+#pragma mark - Base Functions
+
+LSQArrayRef NewLSQArray(CFIndex capacity, LSQBaseVtableRef vtable)
 {
     // Create new Array
-    LSQArray array = LSQInit(LSQArray, &LSQArrayRetain_Internal, &LSQArrayRelease_Internal, &LSQArrayDealloc_Internal);
+    LSQArrayRef array = LSQALLOCK(LSQArray, NULL, (void*)&LSQArrayDealloc);
     // Set properties
-    array->elements   = LSQAllocatorAllocSize(sizeof(LSQNode) * capacity);
-    array->callbacks  = callbacks;
-    array->capacity   = (int32_t)capacity;
-    array->count      = 0;
+    array->vtable        = &kLSQArrayDefaultVtable;
+    array->callbacks     = vtable;
+    array->data.elements = LSQAllocatorAllocSize(sizeof(LSQNodeRef) * capacity);
+    array->data.capacity = (int32_t)capacity;
+    array->data.count    = 0;
     // Fill array with NULL
     for (CFIndex i = 0; i < capacity; ++i)
     {
-        array->elements[i] = NULL;
+        array->data.elements[i] = NULL;
     }
-    // Set functions
-    array->insert_node     = &insert_node;
-    array->remove_node     = &remove_node;
-    array->remove_all      = &remove_all;
-    array->get_node        = &array_get_node;
-    array->block_enumerate = &block_enumerate;
-    array->node_retain     = &array_node_retain;
-    array->node_release    = &array_node_release;
     return array;
 }
 
-LSQArray LSQArrayRetain(LSQArray self)
+void* LSQArrayRetain(LSQArrayRef self)
 {
-    return LSQArrayRetain_Internal(self);
+    self->base = LSQBaseRetain(self->base);
+    return self;
 }
 
-void LSQArrayRelease(LSQArray self)
+void LSQArrayRelease(LSQArrayRef self)
 {
-    LSQArrayRelease_Internal(self);
+    LSQBaseRelease(self->base);
 }
 
-void LSQArrayInsertValueAtIndex(LSQArray self, CFIndex index, const void * value)
+void LSQArrayDealloc(LSQArrayRef self)
 {
-    LSQError error;
-    if (self == NULL || value == NULL)
+    // Release elements
+    if (self->vtable->remove_all != NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
-        LSQErrorLog(&error);
+        self->vtable->remove_all(self);
     }
-    else if (self->insert_node != NULL && self->node_retain)
-    {
-        LSQNode node = LSQNodeMake(value);
-        self->node_retain(self, node);
-        self->insert_node(self, index, node);
-    }
+    // Dealloc array
+    LSQAllocatorDealloc(self->data.elements);
+    LSQAllocatorDealloc(self);
 }
 
-void LSQArrayRemoveValueAtIndex(LSQArray self, CFIndex index)
+//________________________________________________________________________________________
+
+#pragma mark - Public functions
+
+void LSQArrayInsertValueAtIndex(LSQArrayRef self, CFIndex index, const void* value)
 {
-    LSQError error;
-    if (self == NULL)
+    if (value != NULL && self != NULL && self->vtable->insert_node != NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else if (self->remove_node != NULL)
-    {
-        self->remove_node(self, index);
+        LSQNodeRef node = NewLSQNode(value, self->callbacks);
+        self->vtable->insert_node(self, index, node);
     }
 }
 
-void LSQArrayRemoveAllValues(LSQArray self)
+void LSQArrayRemoveValueAtIndex(LSQArrayRef self, CFIndex index)
 {
-    LSQError error;
-    if (self == NULL)
+    if (self != NULL && self->vtable->remove_node != NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else if (self->remove_all != NULL)
-    {
-        self->remove_all(self);
+        self->vtable->remove_node(self, index);
     }
 }
 
-const void* LSQArrayGetValueAtIndex(LSQArray self, CFIndex index)
+void LSQArrayRemoveAllValues(LSQArrayRef self)
 {
-    LSQError error;
-    if (self == NULL)
+    if (self != NULL && self->vtable->remove_all != NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
-        LSQErrorLog(&error);
+        self->vtable->remove_all(self);
     }
-    else if (self->get_node != NULL)
+}
+
+const void* LSQArrayGetValueAtIndex(LSQArrayRef self, CFIndex index)
+{
+    if (self != NULL && self->vtable->get_node != NULL)
     {
-        LSQNode node = self->get_node(self, index);
-        return node->data;
+        LSQNodeRef node;
+        if (self->vtable->get_node(self, index, &node) != noErr)
+        {
+            return LSQNodeGetContent(node);
+        }
     }
     return NULL;
 }
 
-void LSQArrayEnumerateWithBlock(LSQArray self, CFRange range, LSQArrayEnumerateBlock block)
+void LSQArrayEnumerateWithBlock(LSQArrayRef self, CFRange range, LSQArrayBlock block)
 {
-    LSQError error;
-    if (self == NULL)
+    if (self != NULL && self->vtable->block_enumerate != NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else if (self->block_enumerate != NULL)
-    {
-        self->block_enumerate(self, range, block);
+        self->vtable->block_enumerate(self, range, block);
     }
 }
 
-CFIndex LSQArrayGetCount(LSQArray self)
+CFIndex LSQArrayGetCount(LSQArrayRef self)
 {
-    LSQError error;
-    if (self == NULL)
+    if (self != NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else
-    {
-        return self->count;
+        return self->data.count;
     }
     return 0;
 }
 
-CFIndex LSQArrayGetCapacity(LSQArray self)
+CFIndex LSQArrayGetCapacity(LSQArrayRef self)
 {
-    LSQError error;
-    if (self == NULL)
+    if (self != NULL)
     {
-        LSQErrorMake(&error, LSQArrayError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else
-    {
-        return self->capacity;
+        return self->data.capacity;
     }
     return 0;
 }

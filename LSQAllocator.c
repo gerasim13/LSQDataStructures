@@ -1,6 +1,6 @@
 //
 //  LSQAllocator.c
-//  LoopsequeDJ
+//  LSQDataStructures
 //
 //  Created by Павел Литвиненко on 26.08.13.
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
@@ -9,15 +9,16 @@
 #include <stdio.h>
 #include <malloc/malloc.h>
 #include "LSQAllocator.h"
-#include "LSQBase.h"
 #include "nedmalloc.h"
-
-CFAllocatorRef LSQLocklessAllocator = NULL; // Lockless allocator pointer
 
 #ifdef NEDMALLOC_H
 
+//________________________________________________________________________________________
+
 static malloc_zone_t          zone;
 static malloc_introspection_t zone_introspect;
+
+//________________________________________________________________________________________
 
 #pragma mark - malloc_introspection_t callbacks
 
@@ -101,6 +102,8 @@ static void ned_enumerate_discharged_pointers(malloc_zone_t *zone, void (^report
     
 }
 
+//________________________________________________________________________________________
+
 #pragma mark - malloc_zone_t callbacks
 
 static size_t ned_size(struct _malloc_zone_t *zone, const void *ptr)
@@ -162,9 +165,11 @@ static void ned_free_definite_size(malloc_zone_t *zone, void *ptr, size_t size)
     nedfree(ptr);
 }
 
+//________________________________________________________________________________________
+
 #pragma mark - Malloc Zone Wrapper
 
-static malloc_zone_t * create_ned_zone()
+static malloc_zone_t * malloc_ned_zone()
 {
     zone.size               = (void *)ned_size;
 	zone.malloc             = (void *)ned_malloc;
@@ -199,6 +204,12 @@ static malloc_zone_t * create_ned_zone()
 }
 
 #endif
+
+//________________________________________________________________________________________
+
+CFAllocatorRef kLSQLocklessAllocator = NULL;
+
+//________________________________________________________________________________________
 
 #pragma mark - CFAllocator Callbacks
 
@@ -244,12 +255,12 @@ static CFIndex LSQLocklessAllocatorPreferredSize(CFIndex size, CFOptionFlags hin
 }
 
 // This function return pointer to lockless allocator
-CFAllocatorRef LSQLocklessAllocatorMake()
+CFAllocatorRef NewLSQLocklessAllocator()
 {
     #ifdef NEDMALLOC_H
         neddisablethreadcache(0);
         // Create new malloc zone
-        malloc_zone_t *allocatorZone = create_ned_zone();
+        malloc_zone_t *allocatorZone = malloc_ned_zone();
     #else
         malloc_zone_t *allocatorZone = malloc_default_zone();
     #endif
@@ -271,14 +282,27 @@ CFAllocatorRef LSQLocklessAllocatorMake()
     return CFAllocatorCreate(kCFAllocatorUseContext, &context);
 }
 
+struct task_basic_info LSQAllocatorGetMemoryInfo()
+{
+    struct task_basic_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    task_info(mach_task_self(),
+              TASK_BASIC_INFO,
+              (task_info_t)&info,
+              &size);
+    return info;
+}
+
+//________________________________________________________________________________________
+
 #pragma mark - CFAllocator wrapper
 
 // Set LSQLocklessAllocator to Defaul Allocator
-__attribute__((constructor)) static void MSSequencerGetDeafultAllocator(void)
+__attribute__((constructor)) static void LSQAllocator(void)
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        LSQLocklessAllocator = LSQLocklessAllocatorMake();
+        kLSQLocklessAllocator = NewLSQLocklessAllocator();
     });
 }
 

@@ -1,76 +1,70 @@
 //
 //  LSQArray.h
-//  LoopsequeDJ
+//  LSQDataStructures
 //
 //  Created by Павел Литвиненко on 27.10.13.
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
 //
 
-#ifndef LoopsequeDJ_LSQArray_h
-#define LoopsequeDJ_LSQArray_h
+#ifndef LSQDataStructures_LSQArray_h
+#define LSQDataStructures_LSQArray_h
 
 #import <CoreFoundation/CoreFoundation.h>
 #import <Block.h>
-#import "MacTypes.h"
 #import "LSQNode.h"
-#import "LSQError.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-    
+//________________________________________________________________________________________
+
+CF_EXTERN_C_BEGIN
+
+//________________________________________________________________________________________
+
+typedef       struct LSQArray       *LSQArrayRef;
+typedef const struct LSQArrayVtable *LSQArrayVtableRef;
+typedef void (^LSQArrayBlock)(const void *data, CFIndex index);
+
+//________________________________________________________________________________________
+
 #pragma mark - Data Structures
-    
-    // Iteration block diffinition
-    typedef void (^LSQArrayEnumerateBlock)(const void * data, CFIndex index);
-    
-    // Array structure
-    LSQClass_Start(LSQArray, LSQTypeRef);
-        int32_t   capacity;
-        int32_t   count;
-        LSQNode * elements;
-        // Callbacks
-        const struct LSQArrayCallbacks
-        {
-            const void * (*retain_callback)  (const void *);
-            void         (*release_callback) (const void *);
-        } *callbacks;
-        // Functions
-        struct
-        {
-            LSQError (*insert_node)     (void*, CFIndex, LSQNode); // Add item at index
-            LSQError (*remove_node)     (void*, CFIndex);          // Remove item at index
-            LSQError (*remove_all)      (void*);                   // Remove all nodes
-            LSQNode  (*get_node)        (void*, CFIndex);          // Get node at index
-            LSQNode  (*node_retain)     (void*, LSQNode);          // Retain node
-            void     (*node_release)    (void*, LSQNode);          // Release node
-            void     (*block_enumerate) (void*, CFRange, LSQArrayEnumerateBlock); // Enumerate over nodes with block
-        };
-    LSQClass_End(LSQArray);
-    
-    // Default callback (Internally uses CFRetain and CFRelease)
-    extern const struct LSQArrayCallbacks kLSQArrayCFCallbacks;
-    
+
+// Array data
+typedef struct LSQArray_Data
+{
+    int32_t    capacity;  // Max number of elements
+    int32_t    count;     // Current number of elements
+    LSQNodeRef *elements; // Array of nodes
+} LSQArray_Data;
+
+// Private functions
+typedef const struct LSQArrayVtable
+{
+    OSStatus   (*insert_node)     (LSQArrayRef, CFIndex, LSQNodeRef);    // Add item at index
+    OSStatus   (*remove_node)     (LSQArrayRef, CFIndex);                // Remove item at index
+    OSStatus   (*remove_all)      (LSQArrayRef);                         // Remove all nodes
+    OSStatus   (*get_node)        (LSQArrayRef, CFIndex, LSQNodeRef*);   // Get node at index
+    void       (*block_enumerate) (LSQArrayRef, CFRange, LSQArrayBlock); // Enumerate over nodes with block
+} LSQArrayVtable;
+
+//________________________________________________________________________________________
+
 #pragma mark - Functions
-    
-    // Shorthand for creating array
-    LSQArray LSQArrayMake(CFIndex, const struct LSQArrayCallbacks *);
-    // Values handling
-    void        LSQArrayInsertValueAtIndex(LSQArray, CFIndex, const void *);
-    void        LSQArrayRemoveValueAtIndex(LSQArray, CFIndex);
-    void        LSQArrayRemoveAllValues   (LSQArray);
-    const void *LSQArrayGetValueAtIndex   (LSQArray, CFIndex);
-    // Enumerate with block
-    void LSQArrayEnumerateWithBlock(LSQArray, CFRange, LSQArrayEnumerateBlock);
-    // Getting count
-    CFIndex LSQArrayGetCount(LSQArray);
-    CFIndex LSQArrayGetCapacity(LSQArray);
-    // Memory management
-    LSQArray LSQArrayRetain(LSQArray);
-    void     LSQArrayRelease(LSQArray);
-    
-#ifdef __cplusplus
-}
-#endif
+
+CF_EXPORT LSQArrayRef NewLSQArray               (CFIndex, LSQBaseVtableRef);           // Shorthand for creating array
+CF_EXPORT void        LSQArrayInsertValueAtIndex(LSQArrayRef, CFIndex, const void*);   // Insert data at index
+CF_EXPORT void        LSQArrayRemoveValueAtIndex(LSQArrayRef, CFIndex);                // Remove data
+CF_EXPORT void        LSQArrayRemoveAllValues   (LSQArrayRef);                         // Clear array
+CF_EXPORT const void* LSQArrayGetValueAtIndex   (LSQArrayRef, CFIndex);                // Get data from node at index
+CF_EXPORT void        LSQArrayEnumerate         (LSQArrayRef, CFRange, LSQArrayBlock); // Enumerate with block
+CF_EXPORT CFIndex     LSQArrayGetCount          (LSQArrayRef);                         // Getting count
+CF_EXPORT CFIndex     LSQArrayGetCapacity       (LSQArrayRef);                         // Get capacity
+CF_EXPORT void*       LSQArrayRetain            (LSQArrayRef);                         // Retain array
+CF_EXPORT void        LSQArrayRelease           (LSQArrayRef);                         // Release array
+CF_EXPORT void        LSQArrayDealloc           (LSQArrayRef);                         // Dealloc array
+
+//________________________________________________________________________________________
+
+CF_EXTERN_C_END
+
+//________________________________________________________________________________________
 
 #endif

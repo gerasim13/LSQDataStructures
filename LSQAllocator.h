@@ -1,47 +1,43 @@
 //
 //  LSQAllocator.h
-//  LoopsequeDJ
+//  LSQDataStructures
 //
 //  Created by Павел Литвиненко on 26.08.13.
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
 //
 
-#ifndef LoopsequeDJ_LSQAllocator_h
-#define LoopsequeDJ_LSQAllocator_h
+#ifndef LSQDataStructures_LSQAllocator_h
+#define LSQDataStructures_LSQAllocator_h
 
 #import <CoreFoundation/CoreFoundation.h>
-#import "MacTypes.h"
+#import <mach/mach.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-    
-    // Allocator variable
-    CF_EXPORT
-    CFAllocatorRef LSQLocklessAllocator;
-    
-    // Allocator setter
-    CF_EXPORT
-    void LSQAllocatorSetCurrentAllocator(CFAllocatorRef);
-    
-    // Allock macro with size
-    #define LSQAllocatorAllocSize(size) \
-    CFAllocatorAllocate(LSQLocklessAllocator, size, 0)
-    
-    // Allock macro with type
-    #define LSQAllocatorAllocType(type) \
-    LSQAllocatorAllocSize(sizeof(type))
-    
-    // Dealloc macro
-    #define LSQAllocatorDealloc(ptr) \
-    CFAllocatorDeallocate(LSQLocklessAllocator, ptr);
-    
-    // Realloc macro
-    #define LSQAllocatorRealloc(ptr, size) \
-    CFAllocatorReallocate(LSQLocklessAllocator, ptr, size, 0);
-    
-#ifdef __cplusplus
-}
-#endif
+//________________________________________________________________________________________
+
+CF_EXTERN_C_BEGIN
+
+//________________________________________________________________________________________
+
+CF_EXPORT CFAllocatorRef kLSQLocklessAllocator;
+
+//________________________________________________________________________________________
+
+#pragma mark - Functions
+
+CF_EXPORT void                   LSQAllocatorSetCurrentAllocator(CFAllocatorRef); // Allocator setter
+CF_EXPORT struct task_basic_info LSQAllocatorGetMemoryInfo();                     // Get memory info
+
+#pragma mark - Macros
+
+#define LSQAllocatorAllocSize(size)    CFAllocatorAllocate(kLSQLocklessAllocator, size, 0);
+#define LSQAllocatorAllocType(type)    LSQAllocatorAllocSize(sizeof(type));
+#define LSQAllocatorDealloc(ptr)       CFAllocatorDeallocate(kLSQLocklessAllocator, ptr);
+#define LSQAllocatorRealloc(ptr, size) CFAllocatorReallocate(kLSQLocklessAllocator, ptr, size, 0);
+
+//________________________________________________________________________________________
+
+CF_EXTERN_C_END
+
+//________________________________________________________________________________________
 
 #endif

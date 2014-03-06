@@ -1,26 +1,23 @@
 //
 //  LSQDataStructures.h
-//  TheMightyMIDISequencer
+//  LSQDataStructures
 //
 //  Created by Павел Литвиненко on 28.02.14.
 //  Copyright (c) 2014 Casual Underground. All rights reserved.
 //
 
-#ifndef TheMightyMIDISequencer_LSQDataStructures_h
-#define TheMightyMIDISequencer_LSQDataStructures_h
+#ifndef LSQDataStructures_h
+#define LSQDataStructures_h
 
-    #ifdef __cplusplus
-    extern "C" {
-    #endif
+#import <CoreFoundation/CoreFoundation.h>
+
+CF_EXTERN_C_BEGIN
         
-        #import "LSQAllocator.h"
-        #import "LSQBase.h"
-        #import "LSQError.h"
-        #import "LSQNode.h"
-        #import "LSQArray.h"
-        
-    #ifdef __cplusplus
-    }
-    #endif
+#import "LSQAllocator.h"
+#import "LSQBase.h"
+#import "LSQNode.h"
+#import "LSQArray.h"
+
+CF_EXTERN_C_END
 
 #endif

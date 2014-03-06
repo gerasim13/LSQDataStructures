@@ -1,6 +1,6 @@
 //
 //  LSQQueue.c
-//  LoopsequeDJ
+//  LSQDataStructures
 //
 //  Created by Павел Литвиненко on 24.08.13.
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
@@ -10,206 +10,190 @@
 #include <stdio.h>
 #include <libkern/OSAtomic.h>
 
-#pragma mark - Base Functions
+//________________________________________________________________________________________
 
-void* LSQQueueRetain_Internal(void* self)
-{
-    LSQQueue _self = (LSQQueue)self;
-    return LSQSuperRetain(_self);
-}
+#pragma mark - Data Structures
 
-void LSQQueueRelease_Internal(void* self)
+// Array data
+typedef struct LSQQueue
 {
-    LSQQueue _self = (LSQQueue)self;
-    LSQSuperRelease(_self);
-}
+    LSQBaseTypeRef    base;
+    LSQBaseVtableRef  callbacks;
+    LSQQueueVtableRef vtable;
+    LSQQueue_Data     data;
+} LSQQueue;
 
-void LSQQueueDealloc_Internal(void* self)
+// Error codes
+enum
 {
-    LSQQueue _self = (LSQQueue)self;
-    // Release nodes
-    while (_self->head != NULL)
-    {
-        LSQNode node = _self->pop_head(_self, NULL);
-        _self->node_release(_self, node);
-    }
-    // Dealloc super
-    LSQSuperDealloc(_self);
-}
+    LSQQueueError_InvalidArgs  = 888888L << 1,
+    LSQQueueError_WrongCount   = 888888L << 2,
+    LSQQueueError_HeadTailNull = 888888L << 3,
+    LSQQueueError_QueueEmpty   = 888888L << 4
+};
+
+//________________________________________________________________________________________
 
 #pragma mark - Hidden Functions
 
-// Return error code for push function
-LSQError LSQQueuePushErrorCode(LSQQueue queue, LSQNode node)
+OSStatus push_node_check(LSQQueueRef queue, LSQNodeRef node)
 {
-    LSQError error;
+    // Return error code for push function
     if (queue == NULL || node == NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
+        return LSQQueueError_InvalidArgs;
     }
-    else if (queue->head == NULL && queue->tail == NULL)
+    else if (queue->data.capacity < queue->data.count)
     {
-        LSQErrorMake(&error, LSQQueueError_QueueEmpty);
+        return LSQQueueError_WrongCount;
     }
-    else if (queue->head == NULL || queue->tail == NULL)
+    else if (queue->data.head == NULL && queue->data.tail == NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_HeadTailNull);
+        return LSQQueueError_QueueEmpty;
     }
-    else
+    else if (queue->data.head == NULL || queue->data.tail == NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_NoError);
+        return LSQQueueError_HeadTailNull;
     }
-    return error;
+    return noErr;
 }
 
-// Return error code for pop function
-LSQError LSQQueuePopErrorCode(LSQQueue queue)
+OSStatus pop_node_check(LSQQueueRef queue)
 {
-    LSQError error;
+    // Return error code for pop function
     if (queue == NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
+        return LSQQueueError_InvalidArgs;
     }
-    else if (queue->head == NULL && queue->tail == NULL)
+    else if (queue->data.capacity < queue->data.count)
     {
-        LSQErrorMake(&error, LSQQueueError_QueueEmpty);
+        return LSQQueueError_WrongCount;
     }
-    else if (queue->head == NULL || queue->tail == NULL)
+    else if (queue->data.head == NULL && queue->data.tail == NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_HeadTailNull);
+        return LSQQueueError_QueueEmpty;
     }
-    else
+    else if (queue->data.head == NULL || queue->data.tail == NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_NoError);
+        return LSQQueueError_HeadTailNull;
     }
-    return error;
+    return noErr;
 }
 
-// Return error code for get function
-LSQError LSQQueueGetErrorCode(LSQQueue queue, CFIndex index)
+OSStatus get_node_check(LSQQueueRef queue, CFIndex index)
 {
-    LSQError error;
-    if (queue == NULL || index < 0 || index > queue->size)
+    // Return error code for get function
+    if (queue == NULL || index < 0 || index > queue->data.count)
     {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
+        return LSQQueueError_InvalidArgs;
     }
-    else if (queue->head == NULL && queue->tail == NULL)
+    else if (queue->data.capacity < queue->data.count)
     {
-        LSQErrorMake(&error, LSQQueueError_QueueEmpty);
+        return LSQQueueError_WrongCount;
     }
-    else if (queue->head == NULL || queue->tail == NULL)
+    else if (queue->data.head == NULL && queue->data.tail == NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_HeadTailNull);
+        return LSQQueueError_QueueEmpty;
     }
-    else
+    else if (queue->data.head == NULL || queue->data.tail == NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_NoError);
+        return LSQQueueError_HeadTailNull;
     }
-    return error;
+    return noErr;
 }
 
-// Try to add first item
-bool LSQQUeueTryPushFirst(LSQQueue queue, LSQNode node)
+bool try_push_first_element(LSQQueueRef queue, LSQNodeRef node)
 {
-    LSQNode head;
-    LSQNode tail;
-    // Keep trying until Enqueue is done
-    while (true)
+    LSQNodeRef head;
+    LSQNodeRef tail;
+    // Try to add first item
+    bool success = false;
+    while (!success)
     {
-        head = queue->head;
-        tail = queue->tail;
-        if (head == queue->head) { OSAtomicCompareAndSwapPtr(head, node, (void* volatile*)&queue->head); }
-        if (tail == queue->tail) { OSAtomicCompareAndSwapPtr(tail, node, (void* volatile*)&queue->tail); }
-        if (queue->head == node && queue->tail == node)
-        {
-            break;
-        }
+        head = queue->data.head;
+        tail = queue->data.tail;
+        if (head == queue->data.head) { OSAtomicCompareAndSwapPtr(head, node, (void* volatile*)&queue->data.head); }
+        if (tail == queue->data.tail) { OSAtomicCompareAndSwapPtr(tail, node, (void* volatile*)&queue->data.tail); }
+        success = (queue->data.head == node && queue->data.tail == node);
     }
-    return true;
+    return success;
 }
 
-// Try to add item to tail
-bool LSQQueueTryPushBack(LSQQueue queue, LSQNode node)
+bool try_push_back(LSQQueueRef queue, LSQNodeRef node)
 {
-    LSQNode tail;
-    LSQNode next;
-    // Keep trying until Enqueue is done
-    while (true)
+    LSQNodeRef tail;
+    LSQNodeRef next;
+    // Try to add item to tail
+    bool success = false;
+    while (!success)
     {
-        tail = queue->tail;
-        next = tail->front;
-        if (tail == queue->tail)
+        tail = queue->data.tail;
+        next = LSQNodeGetFront(tail);
+        if (tail == queue->data.tail)
         {
             // Was Tail pointing to the last node?
             if (next == NULL)
             {
                 // Try to link node at the end of the linked list
-                if (OSAtomicCompareAndSwapPtr(next, node, (void* volatile*)&tail->front))
-                {
-                    // Enqueue is done. Exit loop
-                    break;
-                }
+                success = LSQNodeSetFront(tail, node);
             }
             else
             {
                 // Tail was not pointing to the last node
                 // Try to swing Tail to the next node
-                OSAtomicCompareAndSwapPtr(tail, next, (void* volatile*)&queue->tail);
+                success = OSAtomicCompareAndSwapPtr(tail, next, (void* volatile*)&queue->data.tail);
             }
         }
     }
     // Enqueue is done. Try to swing Tail to the inserted node
-    return OSAtomicCompareAndSwapPtr(tail, node, (void* volatile*)&queue->tail);
+    return OSAtomicCompareAndSwapPtr(tail, node, (void* volatile*)&queue->data.tail);
 }
 
-// Try to add item to head
-bool LSQQueueTryPushFront(LSQQueue queue, LSQNode node)
+bool try_push_front(LSQQueueRef queue, LSQNodeRef node)
 {
-    LSQNode head;
-    LSQNode prev;
-    // Keep trying until Enqueue is done
-    while (true)
+    LSQNodeRef head;
+    LSQNodeRef prev;
+    // Try to add item to head
+    bool success = false;
+    while (!success)
     {
-        head = queue->head;
-        prev = head->back;
-        if (head == queue->head)
+        head = queue->data.head;
+        prev = LSQNodeGetBack(head);
+        if (head == queue->data.head)
         {
             // Was Head pointing to the first node?
             if (prev == NULL)
             {
                 // Try to link node at the start of the linked list
-                if (OSAtomicCompareAndSwapPtr(prev, node, (void* volatile*)&head->back))
-                {
-                    // Enqueue is done. Exit loop
-                    break;
-                }
+                success = LSQNodeSetBack(head, node);
             }
             else
             {
                 // Head was not pointing to the first node
                 // Try to swing Head to the start node
-                OSAtomicCompareAndSwapPtr(head, prev, (void* volatile*)&queue->head);
+                success = OSAtomicCompareAndSwapPtr(head, prev, (void* volatile*)&queue->data.head);
             }
         }
     }
     // Enqueue is done. Try to swing Head to the inserted node
-    return OSAtomicCompareAndSwapPtr(head, node, (void* volatile*)&queue->head);
+    return OSAtomicCompareAndSwapPtr(head, node, (void* volatile*)&queue->data.head);
 }
 
-// Try to get item from head and remove it from queue
-bool LSQQueueTryPopFront(LSQQueue queue, LSQNode* node)
+bool try_pop_front(LSQQueueRef queue, LSQNodeRef* node)
 {
-    LSQNode tail;
-    LSQNode head;
-    LSQNode next;
+    // Try to get item from head and remove it from queue
+    LSQNodeRef tail;
+    LSQNodeRef head;
+    LSQNodeRef next;
     // Keep trying until Dequeue is done
-    while (true)
+    bool success = false;
+    while (!success)
     {
-        tail = queue->tail;
-        head = queue->head;
-        next = head->front;
+        tail = queue->data.tail;
+        head = queue->data.head;
+        next = LSQNodeGetFront(head);
         // Are head, tail, and next consistent?
-        if (head == queue->head)
+        if (head == queue->data.head)
         {
             // Is queue empty or Tail falling behind?
             if (head == tail)
@@ -219,50 +203,51 @@ bool LSQQueueTryPopFront(LSQQueue queue, LSQNode* node)
                     // Queue contains last node
                     *node = head;
                     // Remove head and tail node
-                    OSAtomicCompareAndSwapPtr(tail, NULL, (void* volatile*)&queue->tail);
-                    OSAtomicCompareAndSwapPtr(head, NULL, (void* volatile*)&queue->head);
+                    OSAtomicCompareAndSwapPtr(tail, NULL, (void* volatile*)&queue->data.tail);
+                    OSAtomicCompareAndSwapPtr(head, NULL, (void* volatile*)&queue->data.head);
                     // Dequeue is done. Exit loop
+                    success = true;
                     break;
                 }
                 else if (next == NULL)
                 {
                     // Queue is empty, couldn't dequeue
-                    return false;
+                    break;
                 }
                 // Tail is falling behind. Try to advance it
-                OSAtomicCompareAndSwapPtr(tail, next, (void* volatile*)&queue->tail);
+                OSAtomicCompareAndSwapPtr(tail, next, (void* volatile*)&queue->data.tail);
             }
             else
             {
                 *node = head;
                 // Try to swing Head to the next node
-                if (OSAtomicCompareAndSwapPtr(head, next, (void* volatile*)&queue->head))
+                if (OSAtomicCompareAndSwapPtr(head, next, (void* volatile*)&queue->data.head))
                 {
                     // Set prev node of next to NULL
-                    OSAtomicCompareAndSwapPtr(next->back, NULL, (void* volatile*)&next->back);
+                    success = LSQNodeSetBack(next, NULL);
                     // Dequeue is done. Exit loop
                     break;
                 }
             }
         }
     }
-    return true;
+    return success;
 }
 
-// Try to get item from tail and remove it from queue
-bool LSQQueueTryPopBack(LSQQueue queue, LSQNode* node)
+bool try_pop_back(LSQQueueRef queue, LSQNodeRef* node)
 {
-    LSQNode head;
-    LSQNode tail;
-    LSQNode prev;
-    // Keep trying until Dequeue is done
-    while (true)
+    LSQNodeRef head;
+    LSQNodeRef tail;
+    LSQNodeRef prev;
+    // Try to get item from tail and remove it from queue
+    bool success = false;
+    while (!success)
     {
-        head = queue->head;
-        tail = queue->tail;
-        prev = tail->back;
+        head = queue->data.head;
+        tail = queue->data.tail;
+        prev = LSQNodeGetBack(tail);
         // Are head, tail, and next consistent?
-        if (tail == queue->tail)
+        if (tail == queue->data.tail)
         {
             // Is queue empty or Tail falling behind?
             if (tail == head)
@@ -272,405 +257,290 @@ bool LSQQueueTryPopBack(LSQQueue queue, LSQNode* node)
                     // Queue contains last node
                     *node = tail;
                     // Remove head and tail node
-                    OSAtomicCompareAndSwapPtr(head, NULL, (void* volatile*)&queue->head);
-                    OSAtomicCompareAndSwapPtr(tail, NULL, (void* volatile*)&queue->tail);
+                    OSAtomicCompareAndSwapPtr(head, NULL, (void* volatile*)&queue->data.head);
+                    OSAtomicCompareAndSwapPtr(tail, NULL, (void* volatile*)&queue->data.tail);
                     // Dequeue is done. Exit loop
+                    success = true;
                     break;
                 }
                 else if (prev == NULL)
                 {
                     // Queue is empty, couldn't dequeue
-                    return false;
+                    break;
                 }
                 // Tail is falling behind. Try to advance it
-                OSAtomicCompareAndSwapPtr(head, prev, (void* volatile*)&queue->head);
+                OSAtomicCompareAndSwapPtr(head, prev, (void* volatile*)&queue->data.head);
             }
             else
             {
                 *node = tail;
                 // Try to swing Tail to the prev node
-                if (OSAtomicCompareAndSwapPtr(tail, prev, (void* volatile*)&queue->tail))
+                if (OSAtomicCompareAndSwapPtr(tail, prev, (void* volatile*)&queue->data.tail))
                 {
                     // Set next node of prev to NULL
-                    OSAtomicCompareAndSwapPtr(prev->front, NULL, (void* volatile*)&prev->front);
+                    success = LSQNodeSetFront(prev, NULL);
                     // Dequeue is done. Exit loop
                     break;
                 }
             }
         }
     }
-    return true;
+    return success;
 }
 
-LSQNode LSQQueueUpdateNodeIndexAndReturn(LSQNode node, CFIndex index)
+void increment_count(LSQQueueRef self)
 {
-    if (node != NULL && OSAtomicCompareAndSwapLong(node->index, index, &node->index))
+    bool success = false;
+    while (!success)
     {
-        return node;
+        success = OSAtomicIncrement32(&self->data.count);
     }
-    // Return node anyway
+}
+
+void decrement_count(LSQQueueRef self)
+{
+    bool success = false;
+    while (!success)
+    {
+        success = OSAtomicDecrement32(&self->data.count) || self->data.count == 0;
+    }
+}
+
+LSQNodeRef search_for_node_at_index(LSQQueueRef self, CFIndex index)
+{
+    LSQNodeRef node = NULL;
+    CFIndex    indx = -1;
+    // Search for node
+    if (index < self->data.count / 2)
+    {
+        // Start from tail
+        indx = self->data.count - 1;
+        node = self->data.tail;
+        while (indx > index)
+        {
+            node = LSQNodeGetBack(node);
+            indx--;
+        }
+    }
+    else
+    {
+        // Start from head
+        indx = 0;
+        node = self->data.head;
+        while (indx < index)
+        {
+            node = LSQNodeGetFront(node);
+            indx++;
+        }
+    }
+    LSQNodeSetIndex(node, index);
     return node;
 }
 
+//________________________________________________________________________________________
+
 #pragma mark - Private Functions
 
-// Add item to tail
-LSQError push_back(void* self, LSQNode node)
+OSStatus push_back(LSQQueueRef self, LSQNodeRef node)
 {
-    if (self != NULL)
+    OSStatus status = push_node_check(self, node);
+    switch (status)
     {
-        LSQQueue queue = (LSQQueue)self;
-        LSQError error = LSQQueuePushErrorCode(queue, node);
-        switch (error.code)
+        case LSQQueueError_QueueEmpty:
         {
-            case LSQQueueError_InvalidArgs:
-            case LSQQueueError_HeadTailNull:
+            if ((node = LSQNodeRetain(node))    &&
+                LSQNodeSetBackFront(node, NULL) &&
+                try_push_first_element(self, node))
             {
-                LSQErrorLog(&error);
-                break;
+                increment_count(self);
             }
-            case LSQQueueError_QueueEmpty:
-            {
-                if (queue->capacity > queue->size)
-                {
-                    node->back = node->front = NULL;
-                    if (LSQQUeueTryPushFirst(queue, node))
-                    {
-                        bool success = false;
-                        // Update size
-                        while (!success)
-                        {
-                            success = OSAtomicIncrement32(&queue->size);
-                        }
-                    }
-                }
-                break;
-            }
-            default:
-            {
-                if (queue->capacity > queue->size)
-                {
-                    node->back = node->front = NULL;
-                    node->back = queue->tail;
-                    if (LSQQueueTryPushBack(queue, node))
-                    {
-                        bool success = false;
-                        // Update size
-                        while (!success)
-                        {
-                            success = OSAtomicIncrement32(&queue->size);
-                        }
-                    }
-                }
-                break;
-            }
+            break;
         }
-        return error;
+        default:
+        {
+            if ((node = LSQNodeRetain(node))          &&
+                LSQNodeSetBackFront(node, NULL)       &&
+                LSQNodeSetBack(node, self->data.tail) &&
+                try_push_back(self, node))
+            {
+                increment_count(self);
+            }
+            break;
+        }
     }
-    return LSQErrorNULL;
+    return status;
 }
 
-// Add item to head
-LSQError push_front(void* self, LSQNode node)
+OSStatus push_front(LSQQueueRef self, LSQNodeRef node)
 {
-    if (self != NULL)
+    OSStatus status = push_node_check(self, node);
+    switch (status)
     {
-        LSQQueue queue = (LSQQueue)self;
-        LSQError error = LSQQueuePushErrorCode(queue, node);
-        switch (error.code)
+        case LSQQueueError_QueueEmpty:
         {
-            case LSQQueueError_InvalidArgs:
-            case LSQQueueError_HeadTailNull:
+            if ((node = LSQNodeRetain(node))    &&
+                LSQNodeSetFrontBack(node, NULL) &&
+                try_push_first_element(self, node))
             {
-                LSQErrorLog(&error);
-                break;
+                increment_count(self);
             }
-            case LSQQueueError_QueueEmpty:
-            {
-                if (queue->capacity > queue->size)
-                {
-                    node->back = node->front = NULL;
-                    if (LSQQUeueTryPushFirst(queue, node))
-                    {
-                        bool success = false;
-                        // Update size
-                        while (!success)
-                        {
-                            success = OSAtomicIncrement32(&queue->size);
-                        }
-                    }
-                }
-                break;
-            }
-            default:
-            {
-                if (queue->capacity > queue->size)
-                {
-                    node->front = node->back = NULL;
-                    node->front = queue->head;
-                    if (LSQQueueTryPushFront(queue, node))
-                    {
-                        bool success = false;
-                        // Update size
-                        while (!success)
-                        {
-                            success = OSAtomicIncrement32(&queue->size);
-                        }
-                    }
-                }
-                break;
-            }
+            break;
         }
-        return error;
+        default:
+        {
+            if ((node = LSQNodeRetain(node))           &&
+                LSQNodeSetFrontBack(node, NULL)        &&
+                LSQNodeSetFront(node, self->data.head) &&
+                try_push_front(self, node))
+            {
+                increment_count(self);
+            }
+            break;
+        }
     }
-    return LSQErrorNULL;
+    return status;
 }
 
-// Get item from tail and remove it from queue
-LSQNode pop_tail(void* self, LSQError* error)
+OSStatus pop_tail(LSQQueueRef self, LSQNodeRef* outNode)
 {
-    if (self != NULL)
+    OSStatus status;
+    if ((status = pop_node_check(self) != noErr))
     {
-        LSQQueue queue = (LSQQueue)self;
-        LSQError _error = LSQQueuePopErrorCode(queue);
-        if (error != NULL) { *error = _error; }
-        
-        switch (_error.code)
-        {
-            case LSQQueueError_InvalidArgs:
-            case LSQQueueError_HeadTailNull:
-            case LSQQueueError_QueueEmpty:
-            {
-                LSQErrorLog(&_error);
-                break;
-            }
-            default:
-            {
-                LSQNode node;
-                if (LSQQueueTryPopBack(queue, &node))
-                {
-                    bool success = false;
-                    // Update size
-                    while (!success)
-                    {
-                        success = OSAtomicDecrement32(&queue->size) || queue->size == 0;
-                    }
-                    return node;
-                }
-                break;
-            }
-        }
+        return status;
     }
-    return NULL;
+    // Get item from tail and remove it from queue
+    if (try_pop_back(self, outNode))
+    {
+        //LSQNodeRelease(*outNode);
+        decrement_count(self);
+    }
+    return noErr;
 }
 
-// Get item from head and remove it from queue
-LSQNode pop_head(void* self, LSQError* error)
+OSStatus pop_head(LSQQueueRef self, LSQNodeRef* outNode)
 {
-    if (self != NULL)
+    OSStatus status;
+    if ((status = pop_node_check(self) != noErr))
     {
-        LSQQueue queue  = (LSQQueue)self;
-        LSQError _error = LSQQueuePopErrorCode(queue);
-        if (error != NULL) { *error = _error; }
-        
-        switch (_error.code)
-        {
-            case LSQQueueError_InvalidArgs:
-            case LSQQueueError_HeadTailNull:
-            case LSQQueueError_QueueEmpty:
-            {
-                LSQErrorLog(&_error);
-                break;
-            }
-            default:
-            {
-                LSQNode node;
-                if (LSQQueueTryPopFront(queue, &node))
-                {
-                    bool success = false;
-                    // Update size
-                    while (!success)
-                    {
-                        success = OSAtomicDecrement32(&queue->size) || queue->size == 0;
-                    }
-                    return node;
-                }
-                break;
-            }
-        }
+        return status;
     }
-    return NULL;
+    // Get item from head and remove it from queue
+    if (try_pop_front(self, outNode))
+    {
+        //LSQNodeRelease(*outNode);
+        decrement_count(self);
+    }
+    return noErr;
 }
 
-// Get item at index
-LSQNode queue_get_node(void* self, CFIndex index)
+OSStatus queue_get_node(LSQQueueRef self, CFIndex index, LSQNodeRef* outNode)
 {
-    if (self != NULL)
+    OSStatus status;
+    if ((status = get_node_check(self, index) != noErr))
     {
-        LSQQueue queue = (LSQQueue)self;
-        LSQError error = LSQQueueGetErrorCode(queue, index);
-        switch (error.code)
-        {
-            case LSQQueueError_InvalidArgs:
-            case LSQQueueError_HeadTailNull:
-            case LSQQueueError_QueueEmpty:
-            {
-                LSQErrorLog(&error);
-                break;
-            }
-            default:
-            {
-                if (index == 0)
-                {
-                    return LSQQueueUpdateNodeIndexAndReturn(queue->head, index);
-                }
-                else if (index == (queue->size - 1))
-                {
-                    return LSQQueueUpdateNodeIndexAndReturn(queue->tail, index);
-                }
-                else
-                {
-                    CFIndex indx = -1;
-                    LSQNode node = NULL;
-                    // Search for node
-                    if (index < queue->size % 2)
-                    {
-                        // Start from tail
-                        indx = queue->size;
-                        node = queue->tail;
-                        while (indx > index)
-                        {
-                            node = node->back;
-                            indx--;
-                        }
-                    }
-                    else
-                    {
-                        // Start from head
-                        indx = 0;
-                        node = queue->head;
-                        while (indx < index)
-                        {
-                            node = node->front;
-                            indx++;
-                        }
-                    }
-                    return LSQQueueUpdateNodeIndexAndReturn(node, index);
-                }
-                break;
-            }
-        }
+        return status;
     }
-    return NULL;
+    // Get item at index
+    if (index == 0)
+    {
+        *outNode = self->data.head;
+        LSQNodeSetIndex(*outNode, index);
+    }
+    else if (index == self->data.count - 1)
+    {
+        *outNode = self->data.tail;
+        LSQNodeSetIndex(*outNode, index);
+    }
+    else
+    {
+        *outNode = search_for_node_at_index(self, index);
+    }
+    return noErr;
 }
 
-LSQNode queue_node_retain(void* self, LSQNode node)
+//________________________________________________________________________________________
+
+static const struct LSQQueueVtable kLSQQueueDefaultVtable = {
+    &push_back,
+    &push_front,
+    &pop_tail,
+    &pop_head,
+    &queue_get_node
+};
+
+//________________________________________________________________________________________
+
+#pragma mark - Base Functions
+
+LSQQueueRef NewLSQQueue(CFIndex capacity, LSQBaseVtableRef vtable)
 {
-    if (self != NULL && node != NULL)
-    {
-        LSQQueue queue = (LSQQueue)self;
-        if (queue->callbacks != NULL && queue->callbacks->retain_callback != NULL)
-        {
-            queue->callbacks->retain_callback(node->data);
-        }
-        LSQNodeRetain(node);
-    }
-    return NULL;
+    // Create new queue
+    LSQQueueRef queue = LSQALLOCK(LSQQueue, NULL, (void*)&LSQQueueDealloc);
+    // Set properties
+    queue->vtable        = &kLSQQueueDefaultVtable;
+    queue->callbacks     = vtable;
+    queue->data.tail     = NULL;
+    queue->data.head     = NULL;
+    queue->data.capacity = (int32_t)capacity;
+    queue->data.count    = 0;
+    return queue;
 }
 
-void queue_node_release(void* self, LSQNode node)
+void* LSQQueueRetain(LSQQueueRef self)
 {
-    if (self != NULL && node != NULL)
+    self->base = LSQBaseRetain(self->base);
+    return self;
+}
+
+void LSQQueueRelease(LSQQueueRef self)
+{
+    LSQBaseRelease(self->base);
+}
+
+void LSQQueueDealloc(LSQQueueRef self)
+{
+    // Release nodes
+    while (self->data.head != NULL)
     {
-        LSQQueue queue = (LSQQueue)self;
-        if (queue->callbacks != NULL && queue->callbacks->release_callback != NULL)
+        LSQNodeRef node;
+        if (self->vtable->pop_head(self, &node) != noErr)
         {
-            queue->callbacks->release_callback(node->data);
+            LSQNodeRelease(node);
         }
-        LSQNodeRelease(node);
     }
+    // Dealloc
+    LSQAllocatorDealloc(self);
 }
 
 #pragma mark - Public functions
 
-LSQQueue LSQQueueMake(CFIndex capacity, const struct LSQQueueCallbacks *callbacks)
+void LSQQueuePushTail(LSQQueueRef self, const void *value)
 {
-    // Create new queue
-    LSQQueue queue = LSQInit(LSQQueue, &LSQQueueRetain_Internal, &LSQQueueRelease_Internal, &LSQQueueDealloc_Internal);
-    // Set properties
-    queue->head       = NULL;
-    queue->tail       = NULL;
-    queue->callbacks  = callbacks;
-    queue->capacity   = (int32_t)capacity;
-    queue->size       = NAN;
-    // Set functions
-    queue->push_back    = &push_back;
-    queue->push_front   = &push_front;
-    queue->pop_tail     = &pop_tail;
-    queue->pop_head     = &pop_head;
-    queue->get_node     = &queue_get_node;
-    queue->node_retain  = &queue_node_retain;
-    queue->node_release = &queue_node_release;
-    return queue;
-}
-
-LSQQueue LSQQueueRetain(LSQQueue self)
-{
-    return LSQQueueRetain_Internal(self);
-}
-
-void LSQQueueRelease(LSQQueue self)
-{
-    LSQQueueRelease_Internal(self);
-}
-
-// Add item to tail
-void LSQQueuePushTail(LSQQueue queue, const void *data)
-{
-    LSQError error;
-    if (queue == NULL || data == NULL)
+    // Add item to tail
+    if (value != NULL && self != NULL && self->vtable->push_back != NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else if (queue->push_back != NULL && queue->node_retain != NULL)
-    {
-        LSQNode node = LSQNodeMake(data);
-        queue->node_retain(queue, node);
-        queue->push_back(queue, node);
+        LSQNodeRef node = NewLSQNode(value, self->callbacks);
+        self->vtable->push_back(self, node);
     }
 }
 
-// Add item to head
-void LSQQueuePushHead(LSQQueue queue, const void *data)
+void LSQQueuePushHead(LSQQueueRef self, const void *value)
 {
-    LSQError error;
-    if (queue == NULL || data == NULL)
+    // Add item to head
+    if (value != NULL && self != NULL && self->vtable->push_front != NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else if (queue->push_front != NULL && queue->node_retain != NULL)
-    {
-        LSQNode node = LSQNodeMake(data);
-        queue->node_retain(queue, node);
-        queue->push_front(queue, node);
+        LSQNodeRef node = NewLSQNode(value, self->callbacks);
+        self->vtable->push_front(self, node);
     }
 }
 
-// Get item from tail and remove it from queue
-LSQNode LSQQueuePopTail(LSQQueue queue)
+LSQNodeRef LSQQueuePopTail(LSQQueueRef self)
 {
-    LSQError error;
-    if (queue == NULL)
+    // Get item from tail and remove it from queue
+    if (self != NULL && self->vtable->pop_tail != NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else
-    {
-        LSQNode node = queue->pop_tail(queue, &error);
-        if (node != NULL && node->data != NULL)
+        LSQNodeRef node;
+        if (self->vtable->pop_tail(self, &node) == noErr)
         {
             return node;
         }
@@ -678,19 +548,13 @@ LSQNode LSQQueuePopTail(LSQQueue queue)
     return NULL;
 }
 
-// Get item from head and remove it from queue
-LSQNode LSQQueuePopHead(LSQQueue queue)
+LSQNodeRef LSQQueuePopHead(LSQQueueRef self)
 {
-    LSQError error;
-    if (queue == NULL)
+    // Get item from head and remove it from queue
+    if (self != NULL && self->vtable->pop_head != NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else
-    {
-        LSQNode node = queue->pop_head(queue, &error);
-        if (node != NULL && node->data != NULL)
+        LSQNodeRef node;
+        if (self->vtable->pop_head(self, &node) == noErr)
         {
             return node;
         }
@@ -698,19 +562,33 @@ LSQNode LSQQueuePopHead(LSQQueue queue)
     return NULL;
 }
 
-// Get item from head but keep it in queue
-LSQNode LSQQueueHead(LSQQueue queue)
+LSQNodeRef LSQQueueHead(LSQQueueRef self)
 {
-    LSQError error;
-    if (queue == NULL)
+    // Get item from head but keep it in queue
+    if (self != NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
-        LSQErrorLog(&error);
+        return self->data.head;
     }
-    else
+    return NULL;
+}
+
+LSQNodeRef LSQQueueTail(LSQQueueRef self)
+{
+    // Get item from tail but keep it in queue
+    if (self != NULL)
     {
-        LSQNode node = queue->head;
-        if (node != NULL && node->data != NULL)
+        return self->data.tail;
+    }
+    return NULL;
+}
+
+LSQNodeRef LSQQueueGetNodeAtIndex(LSQQueueRef self, CFIndex index)
+{
+    // Get node at index
+    if (self != NULL && self->vtable->get_node != NULL)
+    {
+        LSQNodeRef node;
+        if (self->vtable->get_node(self, index, &node) == noErr)
         {
             return node;
         }
@@ -718,59 +596,12 @@ LSQNode LSQQueueHead(LSQQueue queue)
     return NULL;
 }
 
-// Get item from tail but keep it in queue
-LSQNode LSQQueueTail(LSQQueue queue)
+CFIndex LSQQueueGetCount(LSQQueueRef self)
 {
-    LSQError error;
-    if (queue == NULL)
+    // Get queue size
+    if (self != NULL)
     {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else
-    {
-        LSQNode node = queue->tail;
-        if (node != NULL && node->data != NULL)
-        {
-            return node;
-        }
-    }
-    return NULL;
-}
-
-// Get node at index
-LSQNode LSQQueueGetNodeAtIndex(LSQQueue queue, CFIndex index)
-{
-    LSQError error;
-    if (queue == NULL)
-    {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else if (queue->get_node != NULL)
-    {
-        LSQNode node = queue->get_node(queue, index);
-        if (node != NULL && node->data != NULL)
-        {
-            // Return node
-            return node;
-        }
-    }
-    return NULL;
-}
-
-// Get queue size
-CFIndex LSQQueueGetSize(LSQQueue queue)
-{
-    LSQError error;
-    if (queue == NULL)
-    {
-        LSQErrorMake(&error, LSQQueueError_InvalidArgs);
-        LSQErrorLog(&error);
-    }
-    else
-    {
-        return queue->size;
+        return self->data.count;
     }
     return -1;
 }

@@ -1,6 +1,6 @@
 //
 //  LSQArrayTest.m
-//  LoopsequeDJ
+//  LSQDataStructures
 //
 //  Created by Павел Литвиненко on 29.10.13.
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
@@ -16,27 +16,6 @@
 
 @implementation LSQArrayTest
 
-#pragma mark - LSQArray callbacks
-
-const void * LSQArrayRetainCallback(const void* value)
-{
-    if (value != NULL)
-    {
-        CGColorRef color = (CGColorRef)value;
-        return CGColorRetain(color);
-    }
-    return NULL;
-}
-
-void LSQArrayReleaseCallBack(const void* value)
-{
-    if (value != NULL)
-    {
-        CGColorRef color = (CGColorRef)value;
-        CGColorRelease(color);
-    }
-}
-
 #pragma mark - Test Cases
 
 - (UIColor*)randomColor
@@ -47,7 +26,7 @@ void LSQArrayReleaseCallBack(const void* value)
     return [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
 }
 
-- (void)addNumberOfNodes:(NSInteger)num toArray:(LSQArray)array
+- (void)addNumberOfNodes:(NSInteger)num toArray:(LSQArrayRef)array
 {
     CFIndex c = LSQArrayGetCount(array);
     CFIndex i = c > 0 ? c : 0;
@@ -58,7 +37,7 @@ void LSQArrayReleaseCallBack(const void* value)
     }
 }
 
-- (void)removeNumberOfNodes:(NSInteger)num fromArray:(LSQArray)array
+- (void)removeNumberOfNodes:(NSInteger)num fromArray:(LSQArrayRef)array
 {
     CFIndex c = LSQArrayGetCount(array);
     CFIndex i = c > 0 ? c - 1 : 0;
@@ -73,8 +52,7 @@ void LSQArrayReleaseCallBack(const void* value)
     int capacity = MIN(1024, rand());
     int random   = MIN(1024, arc4random() % 100);
     // Create array
-    const struct LSQArrayCallbacks callbacks = { &LSQArrayRetainCallback, &LSQArrayReleaseCallBack };
-    LSQArray array = LSQArrayMake(capacity, &callbacks);
+    LSQArrayRef array = NewLSQArray(capacity, &kLSQNodeVtableCGColor);
     XCTAssert(LSQArrayGetCount(array)    == 0);
     XCTAssert(LSQArrayGetCapacity(array) == capacity);
     // Test 1
