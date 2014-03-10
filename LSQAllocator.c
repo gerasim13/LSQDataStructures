@@ -277,7 +277,6 @@ CFAllocatorRef NewLSQLocklessAllocator()
         LSQLocklessAllocatorDeallocate,
         LSQLocklessAllocatorPreferredSize
     };
-    context.info = allocatorZone;
     // Create allocator
     return CFAllocatorCreate(kCFAllocatorUseContext, &context);
 }

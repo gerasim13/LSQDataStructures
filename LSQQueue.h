@@ -50,8 +50,8 @@ typedef const struct LSQQueueVtable
 #pragma mark - Functions
 
 CF_EXPORT LSQQueueRef NewLSQQueue           (CFIndex, LSQBaseVtableRef); // Shorthand for creating queue
-CF_EXPORT void        LSQQueuePushTail      (LSQQueueRef, const void *); // Add item to tail
-CF_EXPORT void        LSQQueuePushHead      (LSQQueueRef, const void *); // Add item to head
+CF_EXPORT void        LSQQueuePushTail      (LSQQueueRef, void *);       // Add item to tail
+CF_EXPORT void        LSQQueuePushHead      (LSQQueueRef, void *);       // Add item to head
 CF_EXPORT LSQNodeRef  LSQQueuePopTail       (LSQQueueRef);               // Get item from tail and remove it from queue
 CF_EXPORT LSQNodeRef  LSQQueuePopHead       (LSQQueueRef);               // Get item from head and remove it from queue
 CF_EXPORT LSQNodeRef  LSQQueueHead          (LSQQueueRef);               // Get item from head but keep it in queue

@@ -117,14 +117,11 @@ bool try_insert_node(LSQArrayRef array, CFIndex index, LSQNodeRef node)
             array->vtable->remove_node(array, index);
         }
         // Insert new node
-        if (old == array->data.elements[index])
+        if (node != NULL)
         {
-            if (node != NULL)
-            {
-                LSQNodeRetain(node);
-            }
-            success = OSAtomicCompareAndSwapPtr(old, node, (void* volatile*)&array->data.elements[index]);
+            LSQNodeRetain(node);
         }
+        success = OSAtomicCompareAndSwapPtr(array->data.elements[index], node, (void* volatile*)&array->data.elements[index]);
     }
     return (array->data.elements[index] == node);
 }
@@ -132,7 +129,7 @@ bool try_insert_node(LSQArrayRef array, CFIndex index, LSQNodeRef node)
 bool try_remove_node(LSQArrayRef array, CFIndex index)
 {
     // Try to remove item at index
-    bool success= false;
+    bool success = false;
     while (!success)
     {
         LSQNodeRef node = array->data.elements[index];
@@ -143,10 +140,56 @@ bool try_remove_node(LSQArrayRef array, CFIndex index)
             {
                 LSQNodeRelease(node);
             }
-            success = OSAtomicCompareAndSwapPtr(node, NULL, (void* volatile*)&array->data.elements[index]);
+            // Check index
+            if (index < array->data.count - 1)
+            {
+                // Shift elements
+                LSQNodeRef next = array->data.elements[index + 1];
+                // Move memory blocks
+                memmove(&array->data.elements[index],
+                        &array->data.elements[index + 1],
+                        (array->data.count - index - 1) * sizeof(LSQNodeRef));
+                // Put next node at removed index
+                success = OSAtomicCompareAndSwapPtr(array->data.elements[index], next, (void* volatile*)&array->data.elements[index]);
+            }
+            else
+            {
+                // Delete element
+                success = OSAtomicCompareAndSwapPtr(node, NULL, (void* volatile*)&array->data.elements[index]);
+            }
         }
     }
-    return (array->data.elements[index] == NULL);
+    return success;
+}
+
+bool try_realloc_array(LSQArrayRef array, uint32_t capacity)
+{
+    bool success = false;
+    LSQNodeRef *tmp = NULL;
+    // Realloc array
+    while (!success)
+    {
+        tmp = LSQAllocatorRealloc(array->data.elements, sizeof(LSQNodeRef) * capacity);
+        success = (tmp != NULL);
+    }
+    // Update tmp content
+    for (int i = array->data.count; i < capacity; ++i)
+    {
+        tmp[i] = NULL;
+    }
+    // Swap elements with tmp
+    success = false;
+    while (!success)
+    {
+        success = OSAtomicCompareAndSwapPtr(array->data.elements, tmp, (void* volatile*)&array->data.elements);
+    }
+    // Update capacity
+    success = false;
+    while (!success)
+    {
+        success = OSAtomicCompareAndSwap32(array->data.capacity, capacity, (volatile int32_t*)&array->data.capacity);
+    }
+    return success;
 }
 
 //________________________________________________________________________________________
@@ -156,21 +199,37 @@ bool try_remove_node(LSQArrayRef array, CFIndex index)
 OSStatus insert_node(LSQArrayRef self, CFIndex index, LSQNodeRef node)
 {
     OSStatus status;
-    if ((status = insert_at_index_check(self, index, node)) != noErr)
+    switch ((status = insert_at_index_check(self, index, node)))
     {
-        return status;
-    }
-    // Insert new node at index
-    if (try_insert_node(self, index, node))
-    {
-        // Update count
-        bool success = false;
-        while (!success)
+        case LSQArrayError_InvalidArgs:
+        case LSQArrayError_OutOfMemory:
         {
-            success = OSAtomicIncrement32(&self->data.count);
+            break;
+        }
+        case LSQArrayError_ArrayNotInit:
+        case LSQArrayError_IndexOutBounds:
+        {
+            if (!try_realloc_array(self, (uint32_t)index + 1))
+            {
+                break;
+            }
+        }
+        default:
+        {
+            // Insert new node at index
+            if (try_insert_node(self, index, node))
+            {
+                // Update count
+                bool success = false;
+                while (!success)
+                {
+                    success = OSAtomicIncrement32(&self->data.count);
+                }
+            }
+            break;
         }
     }
-    return noErr;
+    return status;
 }
 
 OSStatus remove_node(LSQArrayRef self, CFIndex index)
@@ -203,9 +262,9 @@ OSStatus remove_all(LSQArrayRef self)
     // Iterate over all elements
     if (self->data.count > 0 && self->vtable->remove_node != NULL)
     {
-        for (CFIndex i = self->data.count; i >= 0; --i)
+        while (self->data.count > 0)
         {
-            self->vtable->remove_node(self, i);
+            self->vtable->remove_node(self, 0);
         }
     }
     return noErr;
@@ -298,7 +357,7 @@ void LSQArrayDealloc(LSQArrayRef self)
 
 #pragma mark - Public functions
 
-void LSQArrayInsertValueAtIndex(LSQArrayRef self, CFIndex index, const void* value)
+void LSQArrayInsertValueAtIndex(LSQArrayRef self, CFIndex index, void* value)
 {
     if (value != NULL && self != NULL && self->vtable->insert_node != NULL)
     {
@@ -323,12 +382,12 @@ void LSQArrayRemoveAllValues(LSQArrayRef self)
     }
 }
 
-const void* LSQArrayGetValueAtIndex(LSQArrayRef self, CFIndex index)
+void* LSQArrayGetValueAtIndex(LSQArrayRef self, CFIndex index)
 {
     if (self != NULL && self->vtable->get_node != NULL)
     {
         LSQNodeRef node;
-        if (self->vtable->get_node(self, index, &node) != noErr)
+        if (self->vtable->get_node(self, index, &node) == noErr)
         {
             return LSQNodeGetContent(node);
         }
@@ -336,12 +395,29 @@ const void* LSQArrayGetValueAtIndex(LSQArrayRef self, CFIndex index)
     return NULL;
 }
 
-void LSQArrayEnumerateWithBlock(LSQArrayRef self, CFRange range, LSQArrayBlock block)
+void LSQArrayEnumerate(LSQArrayRef self, CFRange range, LSQArrayBlock block)
 {
     if (self != NULL && self->vtable->block_enumerate != NULL)
     {
         self->vtable->block_enumerate(self, range, block);
     }
+}
+
+CFIndex LSQArrayGetValueIndex(LSQArrayRef self, void* value)
+{
+    if (self != NULL && value != NULL)
+    {
+        // Seqrch for node with value
+        for (int i = 0; i < self->data.count; ++i)
+        {
+            LSQNodeRef node;
+            if (self->vtable->get_node(self, i, &node) == noErr && LSQNodeGetContent(node) == value)
+            {
+                return i;
+            }
+        }
+    }
+    return NAN;
 }
 
 CFIndex LSQArrayGetCount(LSQArrayRef self)

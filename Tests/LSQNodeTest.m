@@ -20,7 +20,7 @@
     // Create random number
     NSNumber *number = [NSNumber numberWithInt:rand()];
     // Create node with number
-    LSQNodeRef node = NewLSQNode((__bridge_retained const void *)(number), &kLSQNodeVtableCF);
+    LSQNodeRef node = NewLSQNode((__bridge_retained void *)(number), &kLSQNodeVtableCF);
     XCTAssert(LSQNodeGetRefCount(node) == 0);
     // Test number equality
     XCTAssert(number.intValue == [(NSNumber*)CFBridgingRelease(LSQNodeGetContent(node)) intValue]);
@@ -36,7 +36,7 @@
     // Create string with random number
     NSString *string = [NSString stringWithFormat:@"%d", rand()];
     // Create node with string
-    LSQNodeRef node = NewLSQNode((__bridge_retained const void *)(string), &kLSQNodeVtableCF);
+    LSQNodeRef node = NewLSQNode((__bridge_retained void *)(string), &kLSQNodeVtableCF);
     XCTAssert(LSQNodeGetRefCount(node) == 0);
     // Test string equality
     XCTAssert([string isEqualToString:(NSString*)CFBridgingRelease(LSQNodeGetContent(node))]);
@@ -68,7 +68,7 @@
     // Create color
     UIBezierPath *path = [UIBezierPath bezierPath];
     // Create node with color
-    LSQNodeRef node = NewLSQNode(path.CGPath, &kLSQNodeVtableCGPath);
+    LSQNodeRef node = NewLSQNode((void*)path.CGPath, &kLSQNodeVtableCGPath);
     XCTAssert(LSQNodeGetRefCount(node) == 0);
     // Test string equality
     XCTAssert(path.CGPath == (CGPathRef)LSQNodeGetContent(node));

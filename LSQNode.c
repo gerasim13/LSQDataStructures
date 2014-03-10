@@ -103,7 +103,7 @@ const struct LSQBaseVtable kLSQNodeVtableCGPath = {
 
 #pragma mark - Base Functions
 
-LSQNodeRef NewLSQNode(const void *content, LSQBaseVtableRef vtable)
+LSQNodeRef NewLSQNode(void *content, LSQBaseVtableRef vtable)
 {
     // Create new node
     LSQNodeRef node = LSQALLOCK(LSQNode, vtable, (void*)&LSQNodeDealloc);
@@ -137,9 +137,14 @@ int32_t LSQNodeGetRefCount(LSQNodeRef self)
     return LSQBaseGetRefCount(self->base);
 }
 
-const void* LSQNodeGetContent(LSQNodeRef self)
+void* LSQNodeGetContent(LSQNodeRef self)
 {
     return self->data.content;
+}
+
+LSQBaseTypeRef LSQNodeGetBase(LSQNodeRef self)
+{
+    return self->base;
 }
 
 CFIndex LSQNodeGetIndex(LSQNodeRef self)

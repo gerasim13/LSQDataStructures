@@ -50,11 +50,12 @@ typedef const struct LSQArrayVtable
 #pragma mark - Functions
 
 CF_EXPORT LSQArrayRef NewLSQArray               (CFIndex, LSQBaseVtableRef);           // Shorthand for creating array
-CF_EXPORT void        LSQArrayInsertValueAtIndex(LSQArrayRef, CFIndex, const void*);   // Insert data at index
+CF_EXPORT void        LSQArrayInsertValueAtIndex(LSQArrayRef, CFIndex, void*);         // Insert data at index
 CF_EXPORT void        LSQArrayRemoveValueAtIndex(LSQArrayRef, CFIndex);                // Remove data
 CF_EXPORT void        LSQArrayRemoveAllValues   (LSQArrayRef);                         // Clear array
-CF_EXPORT const void* LSQArrayGetValueAtIndex   (LSQArrayRef, CFIndex);                // Get data from node at index
+CF_EXPORT void*       LSQArrayGetValueAtIndex   (LSQArrayRef, CFIndex);                // Get data from node at index
 CF_EXPORT void        LSQArrayEnumerate         (LSQArrayRef, CFRange, LSQArrayBlock); // Enumerate with block
+CF_EXPORT CFIndex     LSQArrayGetValueIndex     (LSQArrayRef, void*);                  // Get index of value
 CF_EXPORT CFIndex     LSQArrayGetCount          (LSQArrayRef);                         // Getting count
 CF_EXPORT CFIndex     LSQArrayGetCapacity       (LSQArrayRef);                         // Get capacity
 CF_EXPORT void*       LSQArrayRetain            (LSQArrayRef);                         // Retain array

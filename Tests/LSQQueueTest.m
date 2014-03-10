@@ -17,7 +17,7 @@
 - (void)pushNumberToHead:(NSNumber*)number toQueue:(LSQQueueRef)queue
 {
     CFIndex size = LSQQueueGetCount(queue);
-    LSQQueuePushHead(queue, (__bridge const void *)(number));
+    LSQQueuePushHead(queue, (__bridge void *)(number));
     NSNumber *_num = (__bridge NSNumber*)(LSQNodeGetContent(LSQQueueHead(queue)));
     XCTAssertEqual([_num integerValue], [number integerValue]);
     XCTAssertEqual(LSQQueueGetCount(queue), size + 1);
@@ -39,7 +39,7 @@
 - (void)pushNumberToTail:(NSNumber*)number toQueue:(LSQQueueRef)queue
 {
     CFIndex size = LSQQueueGetCount(queue);
-    LSQQueuePushTail(queue, (__bridge const void *)(number));
+    LSQQueuePushTail(queue, (__bridge void *)(number));
     NSNumber *_num = (__bridge NSNumber*)(LSQNodeGetContent(LSQQueueTail(queue)));
     XCTAssertEqual([_num integerValue], [number integerValue]);
     XCTAssertEqual(LSQQueueGetCount(queue), size + 1);

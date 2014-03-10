@@ -514,7 +514,7 @@ void LSQQueueDealloc(LSQQueueRef self)
 
 #pragma mark - Public functions
 
-void LSQQueuePushTail(LSQQueueRef self, const void *value)
+void LSQQueuePushTail(LSQQueueRef self, void *value)
 {
     // Add item to tail
     if (value != NULL && self != NULL && self->vtable->push_back != NULL)
@@ -524,7 +524,7 @@ void LSQQueuePushTail(LSQQueueRef self, const void *value)
     }
 }
 
-void LSQQueuePushHead(LSQQueueRef self, const void *value)
+void LSQQueuePushHead(LSQQueueRef self, void *value)
 {
     // Add item to head
     if (value != NULL && self != NULL && self->vtable->push_front != NULL)

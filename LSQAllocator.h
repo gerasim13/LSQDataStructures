@@ -31,7 +31,7 @@ CF_EXPORT struct task_basic_info LSQAllocatorGetMemoryInfo();                   
 
 #define LSQAllocatorAllocSize(size)    CFAllocatorAllocate(kLSQLocklessAllocator, size, 0);
 #define LSQAllocatorAllocType(type)    LSQAllocatorAllocSize(sizeof(type));
-#define LSQAllocatorDealloc(ptr)       CFAllocatorDeallocate(kLSQLocklessAllocator, ptr);
+#define LSQAllocatorDealloc(ptr)       CFAllocatorDeallocate(kLSQLocklessAllocator, ptr); ptr = NULL;
 #define LSQAllocatorRealloc(ptr, size) CFAllocatorReallocate(kLSQLocklessAllocator, ptr, size, 0);
 
 //________________________________________________________________________________________
