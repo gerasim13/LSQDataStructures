@@ -410,8 +410,9 @@ CFIndex LSQArrayGetValueIndex(LSQArrayRef self, void* value)
         // Seqrch for node with value
         for (int i = 0; i < self->data.count; ++i)
         {
-            LSQNodeRef node;
-            if (self->vtable->get_node(self, i, &node) == noErr && LSQNodeGetContent(node) == value)
+            LSQNodeRef node = NULL;
+            if (self->vtable->get_node(self, i, &node) == noErr &&
+                node != NULL && LSQNodeGetContent(node) == value)
             {
                 return i;
             }

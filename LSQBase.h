@@ -57,7 +57,7 @@ CF_EXPORT void           LSQBaseSetUserdata(LSQBaseTypeRef, void*);         // S
 
 #define LSQALLOCK(type, vtable, dealloc) ({\
 type *self = LSQAllocatorAllocType(type);\
-self->base = NewLSQBaseType(vtable, dealloc);\
+self->base = NewLSQBaseType(vtable, (void*)dealloc);\
 LSQBaseSetUserdata(self->base, self);\
 self;\
 })
