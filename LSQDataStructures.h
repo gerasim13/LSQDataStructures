@@ -7,7 +7,8 @@
 //
 
 CF_EXTERN_C_BEGIN
-        
+
+#import "LSQCommon.h"
 #import "LSQAllocator.h"
 #import "LSQBase.h"
 #import "LSQNode.h"
