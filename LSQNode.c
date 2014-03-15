@@ -6,9 +6,10 @@
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
 //
 
-#include "LSQNode.h"
-#include <stdio.h>
-#include <libkern/OSAtomic.h>
+#import "LSQNode.h"
+#import "LSQCommon.h"
+#import <stdio.h>
+#import <libkern/OSAtomic.h>
 
 //________________________________________________________________________________________
 
@@ -154,11 +155,7 @@ CFIndex LSQNodeGetIndex(LSQNodeRef self)
 
 void LSQNodeSetIndex(LSQNodeRef self, CFIndex index)
 {
-    bool success= false;
-    while (!success && self != NULL)
-    {
-        success = OSAtomicCompareAndSwapLong(self->data.index, index, &self->data.index);
-    }
+    ATOMICSWAP_LONG(self->data.index, index);
 }
 
 LSQNodeRef LSQNodeGetFront(LSQNodeRef self)
