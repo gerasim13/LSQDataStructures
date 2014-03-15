@@ -503,7 +503,7 @@ void LSQQueueDealloc(LSQQueueRef self)
     while (self->data.head != NULL)
     {
         LSQNodeRef node;
-        if (self->vtable->pop_head(self, &node) != noErr)
+        if (self->vtable->pop_head(self, &node) == noErr)
         {
             LSQNodeRelease(node);
         }

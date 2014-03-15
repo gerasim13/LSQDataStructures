@@ -23,6 +23,11 @@ if (C > B) { C = B; }\
 if (C < A) { C = A; }\
 C;})
 
+#define WAIT(time) ({\
+uint64_t _time = time + mach_absolute_time();\
+while (mach_absolute_time() < _time) { mach_wait_until(_time); }\
+})
+
 #pragma mark - C Functions
 
 inline static CGColorRef CGColorWithRGBA(CGFloat r, CGFloat g, CGFloat b, CGFloat a)
