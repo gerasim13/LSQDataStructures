@@ -11,6 +11,7 @@
 
 #import <CoreFoundation/CoreFoundation.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <libkern/OSAtomic.h>
 #import <math.h>
 #import "MacTypes.h"
 
@@ -26,6 +27,16 @@ C;})
 #define WAIT(time) ({\
 uint64_t _time = time + mach_absolute_time();\
 while (mach_absolute_time() < _time) { mach_wait_until(_time); }\
+})
+
+#define ATOMICSWAP_PTR(old, new) ({\
+bool success = false;\
+while (!success) { success = OSAtomicCompareAndSwapPtr((void*)old, (void*)new, (void* volatile*)&old); }\
+})
+
+#define ATOMICSWAP_LONG(old, new) ({\
+bool success = false;\
+while (!success) { success = OSAtomicCompareAndSwapLong(old, new, &old); }\
 })
 
 #pragma mark - C Functions
