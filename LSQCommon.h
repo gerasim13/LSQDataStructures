@@ -32,11 +32,31 @@ while (mach_absolute_time() < _time) { mach_wait_until(_time); }\
 #define ATOMICSWAP_PTR(old, new) ({\
 bool success = false;\
 while (!success) { success = OSAtomicCompareAndSwapPtr((void*)old, (void*)new, (void* volatile*)&old); }\
+success;\
 })
 
 #define ATOMICSWAP_LONG(old, new) ({\
 bool success = false;\
-while (!success) { success = OSAtomicCompareAndSwapLong(old, new, &old); }\
+while (!success) { success = OSAtomicCompareAndSwapLong(old, new, (volatile long*)&old); }\
+success;\
+})
+
+#define ATOMICSWAP_INT32(old, new) ({\
+bool success = false;\
+while (!success) { success = OSAtomicCompareAndSwap32(old, new, (volatile int32_t*)&old); }\
+success;\
+})
+
+#define ATOMICINCREMENT_INT32(val) ({\
+bool success = false;\
+while (!success) { success = OSAtomicIncrement32((volatile int32_t*)&val); }\
+success;\
+})
+
+#define ATOMICDECRIMENT_INT32(val) ({\
+bool success = false;\
+while (!success) { success = OSAtomicDecrement32((volatile int32_t*)&val); }\
+success;\
 })
 
 #pragma mark - C Functions

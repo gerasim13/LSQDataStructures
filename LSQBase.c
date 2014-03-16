@@ -6,9 +6,8 @@
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
 //
 
-#include "LSQBase.h"
-#include <stdio.h>
-#include <libkern/OSAtomic.h>
+#import "LSQBase.h"
+#import "LSQCommon.h"
 
 //________________________________________________________________________________________
 
@@ -40,12 +39,7 @@ LSQBaseTypeRef NewLSQBaseType(LSQBaseVtableRef vtable, void(*dealloc_callback)(v
 
 void* LSQBaseRetain(LSQBaseTypeRef self)
 {
-    bool success = false;
-    // Increment counter
-    while (!success)
-    {
-        success = OSAtomicIncrement32(&(self->data.refcount));
-    }
+    ATOMICINCREMENT_INT32(self->data.refcount);
     // Execute callback
     if (self->vtable != NULL && self->vtable->retain != NULL)
     {
@@ -57,12 +51,7 @@ void* LSQBaseRetain(LSQBaseTypeRef self)
 
 void LSQBaseRelease(LSQBaseTypeRef self)
 {
-    bool success = false;
-    // Decrement counter
-    while (!success)
-    {
-        success = OSAtomicDecrement32(&(self->data.refcount));
-    }
+    ATOMICDECRIMENT_INT32(self->data.refcount);
     // Execute release callback
     if (self->vtable != NULL && self->vtable->release != NULL)
     {

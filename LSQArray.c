@@ -6,9 +6,8 @@
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
 //
 
-#include "LSQArray.h"
-#include <stdio.h>
-#include <libkern/OSAtomic.h>
+#import "LSQArray.h"
+#import "LSQCommon.h"
 
 //________________________________________________________________________________________
 
@@ -121,7 +120,7 @@ bool try_insert_node(LSQArrayRef array, CFIndex index, LSQNodeRef node)
         {
             LSQNodeRetain(node);
         }
-        success = OSAtomicCompareAndSwapPtr(array->data.elements[index], node, (void* volatile*)&array->data.elements[index]);
+        success = ATOMICSWAP_PTR(array->data.elements[index], node);
     }
     return (array->data.elements[index] == node);
 }
@@ -134,29 +133,26 @@ bool try_remove_node(LSQArrayRef array, CFIndex index)
     {
         LSQNodeRef node = array->data.elements[index];
         // Remove node
-        if (node == array->data.elements[index])
+        if (node != NULL)
         {
-            if (node != NULL)
-            {
-                LSQNodeRelease(node);
-            }
-            // Check index
-            if (index < array->data.count - 1)
-            {
-                // Shift elements
-                LSQNodeRef next = array->data.elements[index + 1];
-                // Move memory blocks
-                memmove(&array->data.elements[index],
-                        &array->data.elements[index + 1],
-                        (array->data.count - index - 1) * sizeof(LSQNodeRef));
-                // Put next node at removed index
-                success = OSAtomicCompareAndSwapPtr(array->data.elements[index], next, (void* volatile*)&array->data.elements[index]);
-            }
-            else
-            {
-                // Delete element
-                success = OSAtomicCompareAndSwapPtr(node, NULL, (void* volatile*)&array->data.elements[index]);
-            }
+            LSQNodeRelease(node);
+        }
+        // Check index
+        if (index < array->data.count - 1)
+        {
+            // Shift elements
+            LSQNodeRef next = array->data.elements[index + 1];
+            // Move memory blocks
+            memmove(&array->data.elements[index],
+                    &array->data.elements[index + 1],
+                    (array->data.count - index - 1) * sizeof(LSQNodeRef));
+            // Put next node at removed index
+            success = ATOMICSWAP_PTR(array->data.elements[index], next);
+        }
+        else
+        {
+            // Delete element
+            success = ATOMICSWAP_PTR(array->data.elements[index], NULL);
         }
     }
     return success;
@@ -175,21 +171,10 @@ bool try_realloc_array(LSQArrayRef array, uint32_t capacity)
     // Update tmp content
     for (int i = array->data.count; i < capacity; ++i)
     {
-        tmp[i] = NULL;
+        ATOMICSWAP_PTR(tmp[i], NULL);
     }
-    // Swap elements with tmp
-    success = false;
-    while (!success)
-    {
-        success = OSAtomicCompareAndSwapPtr(array->data.elements, tmp, (void* volatile*)&array->data.elements);
-    }
-    // Update capacity
-    success = false;
-    while (!success)
-    {
-        success = OSAtomicCompareAndSwap32(array->data.capacity, capacity, (volatile int32_t*)&array->data.capacity);
-    }
-    return success;
+    // Swap elements with tmp and update capacity
+    return ATOMICSWAP_PTR(array->data.elements, tmp) && ATOMICSWAP_INT32(array->data.capacity, capacity);
 }
 
 //________________________________________________________________________________________
@@ -220,11 +205,7 @@ OSStatus insert_node(LSQArrayRef self, CFIndex index, LSQNodeRef node)
             if (try_insert_node(self, index, node))
             {
                 // Update count
-                bool success = false;
-                while (!success)
-                {
-                    success = OSAtomicIncrement32(&self->data.count);
-                }
+                ATOMICINCREMENT_INT32(self->data.count);
             }
             break;
         }
@@ -240,14 +221,10 @@ OSStatus remove_node(LSQArrayRef self, CFIndex index)
         return status;
     }
     // Try to remove node
-    if (try_remove_node(self, index))
+    if (try_remove_node(self, index) && self->data.count >= 1)
     {
         // Update count
-        bool success = false;
-        while (!success && self->data.count >= 1)
-        {
-            success = OSAtomicDecrement32(&self->data.count);
-        }
+        ATOMICDECRIMENT_INT32(self->data.count);
     }
     return noErr;
 }

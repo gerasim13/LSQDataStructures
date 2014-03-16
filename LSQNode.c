@@ -8,8 +8,6 @@
 
 #import "LSQNode.h"
 #import "LSQCommon.h"
-#import <stdio.h>
-#import <libkern/OSAtomic.h>
 
 //________________________________________________________________________________________
 
@@ -165,7 +163,7 @@ LSQNodeRef LSQNodeGetFront(LSQNodeRef self)
 
 bool LSQNodeSetFront(LSQNodeRef self, LSQNodeRef node)
 {
-    return OSAtomicCompareAndSwapPtr(self->data.front, node, (void* volatile*)&self->data.front);
+    return ATOMICSWAP_PTR(self->data.front, node);
 }
 
 LSQNodeRef LSQNodeGetBack(LSQNodeRef self)
@@ -175,7 +173,7 @@ LSQNodeRef LSQNodeGetBack(LSQNodeRef self)
 
 bool LSQNodeSetBack(LSQNodeRef self, LSQNodeRef node)
 {
-    return OSAtomicCompareAndSwapPtr(self->data.back, node, (void* volatile*)&self->data.back);
+    return ATOMICSWAP_PTR(self->data.back, node);
 }
 
 bool LSQNodeSetFrontBack(LSQNodeRef self, LSQNodeRef node)

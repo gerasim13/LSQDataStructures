@@ -6,9 +6,10 @@
 //  Copyright (c) 2013 Casual Underground. All rights reserved.
 //
 
-#include "LSQQueue.h"
-#include <stdio.h>
-#include <libkern/OSAtomic.h>
+#import "LSQQueue.h"
+#import "LSQCommon.h"
+#import <stdio.h>
+#import <libkern/OSAtomic.h>
 
 //________________________________________________________________________________________
 
@@ -104,19 +105,7 @@ OSStatus get_node_check(LSQQueueRef queue, CFIndex index)
 
 bool try_push_first_element(LSQQueueRef queue, LSQNodeRef node)
 {
-    LSQNodeRef head;
-    LSQNodeRef tail;
-    // Try to add first item
-    bool success = false;
-    while (!success)
-    {
-        head = queue->data.head;
-        tail = queue->data.tail;
-        if (head == queue->data.head) { OSAtomicCompareAndSwapPtr(head, node, (void* volatile*)&queue->data.head); }
-        if (tail == queue->data.tail) { OSAtomicCompareAndSwapPtr(tail, node, (void* volatile*)&queue->data.tail); }
-        success = (queue->data.head == node && queue->data.tail == node);
-    }
-    return success;
+    return ATOMICSWAP_PTR(queue->data.head, node) && ATOMICSWAP_PTR(queue->data.tail, node);
 }
 
 bool try_push_back(LSQQueueRef queue, LSQNodeRef node)
@@ -129,24 +118,21 @@ bool try_push_back(LSQQueueRef queue, LSQNodeRef node)
     {
         tail = queue->data.tail;
         next = LSQNodeGetFront(tail);
-        if (tail == queue->data.tail)
+        // Was Tail pointing to the last node?
+        if (next == NULL)
         {
-            // Was Tail pointing to the last node?
-            if (next == NULL)
-            {
-                // Try to link node at the end of the linked list
-                success = LSQNodeSetFront(tail, node);
-            }
-            else
-            {
-                // Tail was not pointing to the last node
-                // Try to swing Tail to the next node
-                success = OSAtomicCompareAndSwapPtr(tail, next, (void* volatile*)&queue->data.tail);
-            }
+            // Try to link node at the end of the linked list
+            success = LSQNodeSetFront(tail, node);
+        }
+        else
+        {
+            // Tail was not pointing to the last node
+            // Try to swing Tail to the next node
+            success = ATOMICSWAP_PTR(queue->data.tail, next);
         }
     }
     // Enqueue is done. Try to swing Tail to the inserted node
-    return OSAtomicCompareAndSwapPtr(tail, node, (void* volatile*)&queue->data.tail);
+    return ATOMICSWAP_PTR(queue->data.tail, node);
 }
 
 bool try_push_front(LSQQueueRef queue, LSQNodeRef node)
@@ -159,24 +145,21 @@ bool try_push_front(LSQQueueRef queue, LSQNodeRef node)
     {
         head = queue->data.head;
         prev = LSQNodeGetBack(head);
-        if (head == queue->data.head)
+        // Was Head pointing to the first node?
+        if (prev == NULL)
         {
-            // Was Head pointing to the first node?
-            if (prev == NULL)
-            {
-                // Try to link node at the start of the linked list
-                success = LSQNodeSetBack(head, node);
-            }
-            else
-            {
-                // Head was not pointing to the first node
-                // Try to swing Head to the start node
-                success = OSAtomicCompareAndSwapPtr(head, prev, (void* volatile*)&queue->data.head);
-            }
+            // Try to link node at the start of the linked list
+            success = LSQNodeSetBack(head, node);
+        }
+        else
+        {
+            // Head was not pointing to the first node
+            // Try to swing Head to the start node
+            success = ATOMICSWAP_PTR(queue->data.head, prev);
         }
     }
     // Enqueue is done. Try to swing Head to the inserted node
-    return OSAtomicCompareAndSwapPtr(head, node, (void* volatile*)&queue->data.head);
+    return ATOMICSWAP_PTR(queue->data.head, node);
 }
 
 bool try_pop_front(LSQQueueRef queue, LSQNodeRef* node)
@@ -193,42 +176,32 @@ bool try_pop_front(LSQQueueRef queue, LSQNodeRef* node)
         head = queue->data.head;
         next = LSQNodeGetFront(head);
         // Are head, tail, and next consistent?
-        if (head == queue->data.head)
+        // Is queue empty or Tail falling behind?
+        if (head == tail)
         {
-            // Is queue empty or Tail falling behind?
-            if (head == tail)
+            if (head != NULL && next == NULL)
             {
-                if (head != NULL && next == NULL)
-                {
-                    // Queue contains last node
-                    *node = head;
-                    // Remove head and tail node
-                    OSAtomicCompareAndSwapPtr(tail, NULL, (void* volatile*)&queue->data.tail);
-                    OSAtomicCompareAndSwapPtr(head, NULL, (void* volatile*)&queue->data.head);
-                    // Dequeue is done. Exit loop
-                    success = true;
-                    break;
-                }
-                else if (next == NULL)
-                {
-                    // Queue is empty, couldn't dequeue
-                    break;
-                }
-                // Tail is falling behind. Try to advance it
-                OSAtomicCompareAndSwapPtr(tail, next, (void* volatile*)&queue->data.tail);
-            }
-            else
-            {
+                // Queue contains last node
                 *node = head;
-                // Try to swing Head to the next node
-                if (OSAtomicCompareAndSwapPtr(head, next, (void* volatile*)&queue->data.head))
-                {
-                    // Set prev node of next to NULL
-                    success = LSQNodeSetBack(next, NULL);
-                    // Dequeue is done. Exit loop
-                    break;
-                }
+                // Remove head and tail node
+                success = ATOMICSWAP_PTR(queue->data.tail, NULL) && ATOMICSWAP_PTR(queue->data.head, NULL);
+                break;
             }
+            else if (next == NULL)
+            {
+                // Queue is empty, couldn't dequeue
+                break;
+            }
+            // Tail is falling behind. Try to advance it
+            ATOMICSWAP_PTR(queue->data.tail, next);
+        }
+        else
+        {
+            *node = head;
+            // Try to swing Head to the next node
+            // Set prev node of next to NULL
+            success = ATOMICSWAP_PTR(queue->data.head, next) && LSQNodeSetBack(next, NULL);
+            break;
         }
     }
     return success;
@@ -257,10 +230,7 @@ bool try_pop_back(LSQQueueRef queue, LSQNodeRef* node)
                     // Queue contains last node
                     *node = tail;
                     // Remove head and tail node
-                    OSAtomicCompareAndSwapPtr(head, NULL, (void* volatile*)&queue->data.head);
-                    OSAtomicCompareAndSwapPtr(tail, NULL, (void* volatile*)&queue->data.tail);
-                    // Dequeue is done. Exit loop
-                    success = true;
+                    success = ATOMICSWAP_PTR(queue->data.head, NULL) && ATOMICSWAP_PTR(queue->data.tail, NULL);
                     break;
                 }
                 else if (prev == NULL)
@@ -269,19 +239,15 @@ bool try_pop_back(LSQQueueRef queue, LSQNodeRef* node)
                     break;
                 }
                 // Tail is falling behind. Try to advance it
-                OSAtomicCompareAndSwapPtr(head, prev, (void* volatile*)&queue->data.head);
+                ATOMICSWAP_PTR(queue->data.head, prev);
             }
             else
             {
                 *node = tail;
                 // Try to swing Tail to the prev node
-                if (OSAtomicCompareAndSwapPtr(tail, prev, (void* volatile*)&queue->data.tail))
-                {
-                    // Set next node of prev to NULL
-                    success = LSQNodeSetFront(prev, NULL);
-                    // Dequeue is done. Exit loop
-                    break;
-                }
+                // Set next node of prev to NULL
+                success = ATOMICSWAP_PTR(queue->data.tail, prev) && LSQNodeSetFront(prev, NULL);
+                break;
             }
         }
     }
@@ -290,20 +256,12 @@ bool try_pop_back(LSQQueueRef queue, LSQNodeRef* node)
 
 void increment_count(LSQQueueRef self)
 {
-    bool success = false;
-    while (!success)
-    {
-        success = OSAtomicIncrement32(&self->data.count);
-    }
+    ATOMICINCREMENT_INT32(self->data.count);
 }
 
 void decrement_count(LSQQueueRef self)
 {
-    bool success = false;
-    while (!success)
-    {
-        success = OSAtomicDecrement32(&self->data.count) || self->data.count == 0;
-    }
+    ATOMICDECRIMENT_INT32(self->data.count);
 }
 
 LSQNodeRef search_for_node_at_index(LSQQueueRef self, CFIndex index)
