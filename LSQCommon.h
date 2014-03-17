@@ -35,6 +35,12 @@ while (!success) { success = OSAtomicCompareAndSwapPtr((void*)old, (void*)new, (
 success;\
 })
 
+#define ATOMICSWAP_INT(old, new) ({\
+bool success = false;\
+while (!success) { success = OSAtomicCompareAndSwapInt(old, new, (volatile int*)&old); }\
+success;\
+})
+
 #define ATOMICSWAP_LONG(old, new) ({\
 bool success = false;\
 while (!success) { success = OSAtomicCompareAndSwapLong(old, new, (volatile long*)&old); }\
