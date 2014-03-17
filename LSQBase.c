@@ -70,6 +70,7 @@ void LSQBaseDealloc(LSQBaseTypeRef self)
     {
         self->data.dealloc(self->data.userdata);
     }
+    ATOMICSWAP_PTR(self->data.userdata, NULL);
     LSQAllocatorDealloc(self);
 }
 
@@ -80,5 +81,5 @@ int32_t LSQBaseGetRefCount(LSQBaseTypeRef self)
 
 void LSQBaseSetUserdata(LSQBaseTypeRef self, void* data)
 {
-    self->data.userdata = data;
+    ATOMICSWAP_PTR(self->data.userdata, data);
 }

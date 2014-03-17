@@ -117,7 +117,7 @@ LSQNodeRef NewLSQNode(void *content, LSQBaseVtableRef vtable)
 
 void* LSQNodeRetain(LSQNodeRef self)
 {
-    self->base = LSQBaseRetain(self->base);
+    ATOMICSWAP_PTR(self->base, LSQBaseRetain(self->base));
     return self;
 }
 
@@ -128,6 +128,10 @@ void LSQNodeRelease(LSQNodeRef self)
 
 void LSQNodeDealloc(LSQNodeRef self)
 {
+    ATOMICSWAP_PTR(self->data.back, NULL);
+    ATOMICSWAP_PTR(self->data.front, NULL);
+    ATOMICSWAP_PTR(self->data.content, NULL);
+    ATOMICSWAP_PTR(self->base, NULL);
     LSQAllocatorDealloc(self);
 }
 

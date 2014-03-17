@@ -41,6 +41,12 @@ while (!success) { success = OSAtomicCompareAndSwapLong(old, new, (volatile long
 success;\
 })
 
+#define ATOMICSWAP_FLOAT(old, new) ({\
+bool success = false;\
+while (!success) { success = OSAtomicCompareAndSwap32(old, new, (volatile int32_t*)&old); }\
+success;\
+})
+
 #define ATOMICSWAP_INT32(old, new) ({\
 bool success = false;\
 while (!success) { success = OSAtomicCompareAndSwap32(old, new, (volatile int32_t*)&old); }\
@@ -55,7 +61,7 @@ success;\
 
 #define ATOMICDECRIMENT_INT32(val) ({\
 bool success = false;\
-while (!success) { success = OSAtomicDecrement32((volatile int32_t*)&val); }\
+while (!success) { success = OSAtomicDecrement32((volatile int32_t*)&val) || val == 0; }\
 success;\
 })
 
