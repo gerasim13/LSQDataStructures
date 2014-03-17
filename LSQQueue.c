@@ -8,8 +8,6 @@
 
 #import "LSQQueue.h"
 #import "LSQCommon.h"
-#import <stdio.h>
-#import <libkern/OSAtomic.h>
 
 //________________________________________________________________________________________
 
@@ -385,7 +383,6 @@ OSStatus pop_head(LSQQueueRef self, LSQNodeRef* outNode)
     // Get item from head and remove it from queue
     if (try_pop_front(self, outNode))
     {
-        //LSQNodeRelease(*outNode);
         decrement_count(self);
     }
     return noErr;
@@ -446,7 +443,7 @@ LSQQueueRef NewLSQQueue(CFIndex capacity, LSQBaseVtableRef vtable)
 
 void* LSQQueueRetain(LSQQueueRef self)
 {
-    self->base = LSQBaseRetain(self->base);
+    ATOMICSWAP_PTR(self->base, LSQBaseRetain(self->base));
     return self;
 }
 
@@ -457,16 +454,20 @@ void LSQQueueRelease(LSQQueueRef self)
 
 void LSQQueueDealloc(LSQQueueRef self)
 {
-    // Release nodes
-    while (self->data.head != NULL)
+    LSQNodeRef node = self->data.head;
+    // Set head and tail to NULL
+    if (ATOMICSWAP_PTR(self->data.tail, NULL) &&
+        ATOMICSWAP_PTR(self->data.head, NULL))
     {
-        LSQNodeRef node;
-        if (self->vtable->pop_head(self, &node) == noErr)
+        // Release nodes
+        while (node != NULL)
         {
+            LSQNodeRef next = LSQNodeGetFront(node);
             LSQNodeRelease(node);
+            node = next;
         }
     }
-    // Dealloc
+    ATOMICSWAP_PTR(self->base, NULL);
     LSQAllocatorDealloc(self);
 }
 
@@ -523,7 +524,7 @@ LSQNodeRef LSQQueuePopHead(LSQQueueRef self)
 LSQNodeRef LSQQueueHead(LSQQueueRef self)
 {
     // Get item from head but keep it in queue
-    if (self != NULL)
+    if (self != NULL && self->data.head != NULL)
     {
         return self->data.head;
     }
@@ -533,7 +534,7 @@ LSQNodeRef LSQQueueHead(LSQQueueRef self)
 LSQNodeRef LSQQueueTail(LSQQueueRef self)
 {
     // Get item from tail but keep it in queue
-    if (self != NULL)
+    if (self != NULL && self->data.tail != NULL)
     {
         return self->data.tail;
     }
@@ -556,10 +557,18 @@ LSQNodeRef LSQQueueGetNodeAtIndex(LSQQueueRef self, CFIndex index)
 
 CFIndex LSQQueueGetCount(LSQQueueRef self)
 {
-    // Get queue size
     if (self != NULL)
     {
         return self->data.count;
+    }
+    return -1;
+}
+
+CFIndex LSQQueueGetCapacity(LSQQueueRef self)
+{
+    if (self != NULL)
+    {
+        return self->data.capacity;
     }
     return -1;
 }

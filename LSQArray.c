@@ -309,7 +309,7 @@ LSQArrayRef NewLSQArray(CFIndex capacity, LSQBaseVtableRef vtable)
 
 void* LSQArrayRetain(LSQArrayRef self)
 {
-    self->base = LSQBaseRetain(self->base);
+    ATOMICSWAP_PTR(self->base, LSQBaseRetain(self->base));
     return self;
 }
 
@@ -325,6 +325,7 @@ void LSQArrayDealloc(LSQArrayRef self)
     {
         self->vtable->remove_all(self);
     }
+    ATOMICSWAP_PTR(self->base, NULL);
     // Dealloc array
     LSQAllocatorDealloc(self->data.elements);
     LSQAllocatorDealloc(self);

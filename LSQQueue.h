@@ -58,6 +58,7 @@ CF_EXPORT LSQNodeRef  LSQQueueHead          (LSQQueueRef);               // Get 
 CF_EXPORT LSQNodeRef  LSQQueueTail          (LSQQueueRef);               // Get item from tail but keep it in queue
 CF_EXPORT LSQNodeRef  LSQQueueGetNodeAtIndex(LSQQueueRef, CFIndex);      // Get node at index
 CF_EXPORT CFIndex     LSQQueueGetCount      (LSQQueueRef);               // Get queue size
+CF_EXPORT CFIndex     LSQQueueGetCapacity   (LSQQueueRef);               // Get queue capacity
 CF_EXPORT void*       LSQQueueRetain        (LSQQueueRef);               // Retain queue
 CF_EXPORT void        LSQQueueRelease       (LSQQueueRef);               // Release queue
 CF_EXPORT void        LSQQueueDealloc       (LSQQueueRef);               // Dealloc queue
