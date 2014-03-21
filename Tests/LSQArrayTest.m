@@ -163,7 +163,7 @@
     // Test 1
     {
         // Add nodes
-        int random = MIN(random, MIN(1024, arc4random() % 1000));
+        int random = MAX((int)LSQArrayGetCount(array), MIN(1024, arc4random() % 1000));
         int count  = (int)LSQArrayGetCount(array) + random;
         [self addNumberOfNodes:random toArray:array];
         XCTAssert(LSQArrayGetCount(array) == count);
@@ -171,7 +171,7 @@
     // Test 2
     {
         // Remove nodes
-        int random = MIN(random, MIN(1024, arc4random() % 100));
+        int random = MIN((int)LSQArrayGetCount(array), MIN(1024, arc4random() % 100));
         int count  = (int)LSQArrayGetCount(array) - random;
         [self removeNumberOfNodes:random fromArray:array];
         XCTAssert(LSQArrayGetCount(array) == count);
@@ -179,7 +179,7 @@
     // Test 3
     {
         // Add nodes
-        int random = MIN(random, MIN(1024, arc4random() % 1000));
+        int random = MIN((int)LSQArrayGetCount(array), MIN(1024, arc4random() % 1000));
         int count  = (int)LSQArrayGetCount(array) + random;
         [self addNumberOfNodes:random toArray:array];
         XCTAssert(LSQArrayGetCount(array) == count);
@@ -187,7 +187,7 @@
     // Test 4
     {
         // Remove nodes
-        int random = MIN(random, MIN(1024, arc4random() % 100));
+        int random = MIN((int)LSQArrayGetCount(array), MIN(1024, arc4random() % 100));
         int count  = (int)LSQArrayGetCount(array) - random;
         [self removeNumberOfNodes:random fromArray:array];
         XCTAssert(LSQArrayGetCount(array) == count);
@@ -195,7 +195,7 @@
     // Test 5
     {
         // Add nodes
-        int random = MIN(random, MIN(1024, arc4random() % 1000));
+        int random = MIN((int)LSQArrayGetCount(array), MIN(1024, arc4random() % 1000));
         int count  = (int)LSQArrayGetCount(array) + random;
         [self addNumberOfNodes:random toArray:array];
         XCTAssert(LSQArrayGetCount(array) == count);

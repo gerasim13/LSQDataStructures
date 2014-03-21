@@ -207,6 +207,10 @@ OSStatus insert_node(LSQArrayRef self, CFIndex index, LSQNodeRef node)
                 // Update count
                 ATOMICINCREMENT_INT32(self->data.count);
             }
+            else
+            {
+                status = LSQArrayError_OutOfMemory;
+            }
             break;
         }
     }
@@ -226,7 +230,7 @@ OSStatus remove_node(LSQArrayRef self, CFIndex index)
         // Update count
         ATOMICDECRIMENT_INT32(self->data.count);
     }
-    return noErr;
+    return status;
 }
 
 OSStatus remove_all(LSQArrayRef self)
@@ -244,7 +248,7 @@ OSStatus remove_all(LSQArrayRef self)
             self->vtable->remove_node(self, 0);
         }
     }
-    return noErr;
+    return status;
 }
 
 OSStatus array_get_node(LSQArrayRef self, CFIndex index, LSQNodeRef* outNode)
@@ -257,7 +261,7 @@ OSStatus array_get_node(LSQArrayRef self, CFIndex index, LSQNodeRef* outNode)
     // Get node
     *outNode = self->data.elements[index];
     LSQNodeSetIndex(*outNode, index);
-    return noErr;
+    return status;
 }
 
 void block_enumerate(LSQArrayRef self, CFRange range, LSQArrayBlock block)
@@ -405,7 +409,7 @@ CFIndex LSQArrayGetCount(LSQArrayRef self)
     {
         return self->data.count;
     }
-    return 0;
+    return NAN;
 }
 
 CFIndex LSQArrayGetCapacity(LSQArrayRef self)
@@ -414,5 +418,5 @@ CFIndex LSQArrayGetCapacity(LSQArrayRef self)
     {
         return self->data.capacity;
     }
-    return 0;
+    return NAN;
 }

@@ -15,6 +15,8 @@
 #import <math.h>
 #import "MacTypes.h"
 
+//________________________________________________________________________________________
+
 #pragma mark - Macro and Constants
 
 #define M_2PI 6.28318530717958647692528676655900576 /* pi*2 */
@@ -61,7 +63,7 @@ success;\
 
 #define ATOMICINCREMENT_INT32(val) ({\
 bool success = false;\
-while (!success) { success = OSAtomicIncrement32((volatile int32_t*)&val); }\
+while (!success) { success = OSAtomicIncrement32((volatile int32_t*)&val) >= 0; }\
 success;\
 })
 
@@ -70,6 +72,8 @@ bool success = false;\
 while (!success) { success = OSAtomicDecrement32((volatile int32_t*)&val) || val == 0; }\
 success;\
 })
+
+//________________________________________________________________________________________
 
 #pragma mark - C Functions
 

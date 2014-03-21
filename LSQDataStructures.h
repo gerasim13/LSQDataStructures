@@ -14,5 +14,7 @@ CF_EXTERN_C_BEGIN
 #import "LSQNode.h"
 #import "LSQArray.h"
 #import "LSQQueue.h"
+#import "LSQHashMap.h"
+#import "LSQHashSet.h"
 
 CF_EXTERN_C_END
