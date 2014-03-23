@@ -18,7 +18,7 @@
 - (void)testLSQNodeWithNumber
 {
     // Create random number
-    NSNumber *number = [NSNumber numberWithInt:rand()];
+    NSNumber *number = @(rand());
     // Create node with number
     LSQNodeRef node = NewLSQNode((__bridge_retained void *)(number), &kLSQNodeVtableCF);
     XCTAssert(LSQNodeGetRefCount(node) == 0);

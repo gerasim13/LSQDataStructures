@@ -131,7 +131,7 @@
         [array2 removeObjectAtIndex:index];
         // Check equality of object at removed index
         NSNumber *num1 = (__bridge NSNumber *)(LSQArrayGetValueAtIndex(array1, index));
-        NSNumber *num2 = [array2 objectAtIndex:index];
+        NSNumber *num2 = array2[index];
         XCTAssert(num1.intValue == num2.intValue);
     }
     // Check array conts
@@ -141,7 +141,7 @@
     for (int i = 0; i < LSQArrayGetCount(array1); ++i)
     {
         NSNumber *num1 = (__bridge NSNumber *)(LSQArrayGetValueAtIndex(array1, i));
-        NSNumber *num2 = [array2 objectAtIndex:i];
+        NSNumber *num2 = array2[i];
         XCTAssert(num1.intValue == num2.intValue);
     }
     // Remove all

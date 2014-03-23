@@ -67,7 +67,7 @@
     // Add random numbers
     for (int i = 0; i < random; ++i)
     {
-        NSNumber *num = [NSNumber numberWithInt:rand()];
+        NSNumber *num = @(rand());
         [self pushNumberToHead:num toQueue:queue];
     }
     // Pop from tail
@@ -86,7 +86,7 @@
     // Add random numbers
     for (int i = 0; i < random; ++i)
     {
-        NSNumber *num = [NSNumber numberWithInt:rand()];
+        NSNumber *num = @(rand());
         [self pushNumberToTail:num toQueue:queue];
     }
     // Pop from head
@@ -104,7 +104,7 @@
     // Add random numbers
     for (int i = 0; i < random; ++i)
     {
-        NSNumber *num = [NSNumber numberWithInt:rand()];
+        NSNumber *num = @(rand());
         [array addObject:num];
     }
     // Create queue
@@ -113,13 +113,13 @@
     // Add numbers to queue
     for (int i = 0; i < array.count; ++i)
     {
-        NSNumber *num = [array objectAtIndex:i];
+        NSNumber *num = array[i];
         [self pushNumberToTail:num toQueue:queue];
     }
     // Remove numbers from queue
     for (int i = (int)array.count; i > 0; --i)
     {
-        NSNumber *num = [array objectAtIndex:i - 1];
+        NSNumber *num = array[i - 1];
         // Pop from tail
         LSQNodeRef node = LSQQueuePopTail(queue);
         NSNumber  *_num = (__bridge NSNumber*)LSQNodeGetContent(node);
@@ -142,7 +142,7 @@
     // Add random numbers
     for (int i = 0; i < random; ++i)
     {
-        NSNumber *num = [NSNumber numberWithInt:rand()];
+        NSNumber *num = @(rand());
         [array addObject:num];
     }
     // Create queue
@@ -151,13 +151,13 @@
     // Add numbers to queue
     for (int i = 0; i < array.count; ++i)
     {
-        NSNumber *num = [array objectAtIndex:i];
+        NSNumber *num = array[i];
         [self pushNumberToTail:num toQueue:queue];
     }
     // Remove numbers from queue
     for (int i = 0; i < array.count; ++i)
     {
-        NSNumber *num = [array objectAtIndex:i];
+        NSNumber *num = array[i];
         // Pop from tail
         LSQNodeRef node = LSQQueuePopHead(queue);
         NSNumber  *_num = (__bridge NSNumber*)LSQNodeGetContent(node);
@@ -180,7 +180,7 @@
     // Add random numbers
     for (int i = 0; i < random; ++i)
     {
-        NSNumber *num = [NSNumber numberWithInt:rand()];
+        NSNumber *num = @(rand());
         [array addObject:num];
     }
     // Create queue
@@ -189,13 +189,13 @@
     // Add numbers to queue
     for (int i = 0; i < array.count; ++i)
     {
-        NSNumber *num = [array objectAtIndex:i];
+        NSNumber *num = array[i];
         [self pushNumberToTail:num toQueue:queue];
     }
     // Check equality of numbers
     for (int i = 0; i < array.count; ++i)
     {
-        NSNumber *num = [array objectAtIndex:i];
+        NSNumber *num = array[i];
         // Get number at index
         LSQNodeRef node = LSQQueueGetNodeAtIndex(queue, i);
         NSNumber  *_num = (__bridge NSNumber*)LSQNodeGetContent(node);

@@ -17,7 +17,7 @@
 - (void)testInsertNumberInHashSet
 {
     LSQHashSetRef set = NewLSQHashSet();
-    NSNumber *number = [NSNumber numberWithInt:rand()];
+    NSNumber *number = @(rand());
     LSQHashSetAddItem(set, (__bridge LSQHashSetElement)(number));
     XCTAssert(LSQHashSetContainsItem(set, (__bridge LSQHashSetElement)(number)));
     LSQHashSetRemoveAll(set);
@@ -30,7 +30,7 @@
     LSQHashSetRef set = NewLSQHashSet();
     for (int i = 0; i < MAX(arc4random() % 1000, 1024); ++i)
     {
-        NSNumber *number = [NSNumber numberWithInt:rand()];
+        NSNumber *number = @(rand());
         LSQHashSetAddItem(set, (__bridge LSQHashSetElement)(number));
         XCTAssert(LSQHashSetContainsItem(set, (__bridge LSQHashSetElement)(number)));
     }
@@ -45,7 +45,7 @@
     LSQHashSetRef set     = NewLSQHashSet();
     for (int i = 0; i < MAX(arc4random() % 1000, 1024); ++i)
     {
-        NSNumber *number = [NSNumber numberWithInt:rand()];
+        NSNumber *number = @(rand());
         [array addObject:number];
     }
     for (int i = 0; i < array.count; ++i)
