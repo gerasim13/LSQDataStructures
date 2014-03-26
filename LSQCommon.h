@@ -190,4 +190,9 @@ inline static CGRect CGRectSliceFromRight(CGRect rect, CGFloat amount)
     return rect;
 }
 
+inline static CFHashCode CGRectGetHash(CGRect rect)
+{
+    return (*(CFIndex*)&rect.origin.x << 10 ^ *(CFIndex*)&rect.origin.y) + (*(CFIndex*)&rect.size.width << 10 ^ *(CFIndex*)&rect.size.height);
+}
+
 #endif
