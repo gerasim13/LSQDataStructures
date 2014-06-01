@@ -24,6 +24,10 @@ typedef const struct LSQBaseVtable *LSQBaseVtableRef;
 
 //________________________________________________________________________________________
 
+#define NO_NULL(...) __attribute__((nonnull (__VA_ARGS__)))
+
+//________________________________________________________________________________________
+
 #pragma mark - Data Structures
 
 // Ref counter and version
@@ -31,41 +35,36 @@ typedef struct LSQBaseType_Data
 {
     int32_t refcount;
     int32_t version;
-    void    (*dealloc)(void*); // Dealloc callback
-    void*   userdata;          // This will be passed into all callbacks
+    void*   userdata;                     // This will be passed into all callbacks
+    void    (*dealloc)(void*) NO_NULL(1); // Dealloc callback
 } LSQBaseType_Data;
 
 // Memory management functions
 typedef const struct LSQBaseVtable
 {
-    void* (*retain)  (void*);
-    void  (*release) (void*);
+    void* (*retain)  (void*) NO_NULL(1);
+    void  (*release) (void*) NO_NULL(1);
 } LSQBaseVtable;
 
 //________________________________________________________________________________________
     
 #pragma mark - Functions
 
-CF_EXPORT LSQBaseTypeRef NewLSQBaseType    (LSQBaseVtableRef, void(void*)); // AllocInit function
-CF_EXPORT void           LSQBaseDealloc    (LSQBaseTypeRef);                // Dealloc function
-CF_EXPORT void*          LSQBaseRetain     (LSQBaseTypeRef);                // Increment ref counter
-CF_EXPORT void           LSQBaseRelease    (LSQBaseTypeRef);                // Decrement ref counter
-CF_EXPORT int32_t        LSQBaseGetRefCount(LSQBaseTypeRef);                // Get ref count
-CF_EXPORT void           LSQBaseSetUserdata(LSQBaseTypeRef, void*);         // Set userdata
+CF_EXPORT NO_NULL(2)   LSQBaseTypeRef NewLSQBaseType    (LSQBaseVtableRef, void(void*)); // AllocInit function
+CF_EXPORT NO_NULL(1)   void           LSQBaseDealloc    (LSQBaseTypeRef);                // Dealloc function
+CF_EXPORT NO_NULL(1)   void*          LSQBaseRetain     (LSQBaseTypeRef);                // Increment ref counter
+CF_EXPORT NO_NULL(1)   void           LSQBaseRelease    (LSQBaseTypeRef);                // Decrement ref counter
+CF_EXPORT NO_NULL(1)   int32_t        LSQBaseGetRefCount(LSQBaseTypeRef);                // Get ref count
+CF_EXPORT NO_NULL(1,2) void           LSQBaseSetUserdata(LSQBaseTypeRef, void*);         // Set userdata
 
 #pragma mark - Macros
 
 #define LSQALLOCK(type, vtable, dealloc) ({\
-type *self = LSQAllocatorAllocType(type);\
-self->base = NewLSQBaseType(vtable, (void*)dealloc);\
-LSQBaseSetUserdata(self->base, self);\
-self;\
+type *__self = LSQAllocatorAllocType(type);\
+__self->base = NewLSQBaseType(vtable, (void*)dealloc);\
+LSQBaseSetUserdata(__self->base, __self);\
+__self;\
 })
-
-//#define LSQDEALLOCK(expr) ({\
-//LSQBaseDealloc(expr->base);\
-//LSQAllocatorDealloc(expr);\
-//})
 
 //________________________________________________________________________________________
 

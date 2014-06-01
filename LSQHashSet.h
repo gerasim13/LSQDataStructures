@@ -44,30 +44,30 @@ typedef struct LSQHashSet_Data
 // Private functions
 typedef const struct LSQHashSetVtable
 {
-    Boolean  (*is_member)  (LSQHashSetRef, LSQHashSetElement);    // Check if hasmap contains element
-    OSStatus (*insert)     (LSQHashSetRef, LSQHashSetElement);    // Add item at index
-    OSStatus (*remove)     (LSQHashSetRef, LSQHashSetElement);    // Remove element
-    OSStatus (*remove_all) (LSQHashSetRef);                       // Remove all elements
-    void     (*iterate)    (LSQHashSetRef, LSQHashSetBlock, int); // Iterate over all elements in set
+    NO_NULL(1,2) Boolean  (*is_member)  (LSQHashSetRef, LSQHashSetElement);    // Check if hasmap contains element
+    NO_NULL(1,2) OSStatus (*insert)     (LSQHashSetRef, LSQHashSetElement);    // Add item
+    NO_NULL(1,2) OSStatus (*remove)     (LSQHashSetRef, LSQHashSetElement);    // Remove element
+    NO_NULL(1)   OSStatus (*remove_all) (LSQHashSetRef);                       // Remove all elements
+    NO_NULL(1,2) void     (*iterate)    (LSQHashSetRef, LSQHashSetBlock, int); // Iterate over all elements in set
 } LSQHashSetVtable;
 
 //________________________________________________________________________________________
 
 #pragma mark - Functions
 
-CF_EXPORT LSQHashSetRef NewLSQHashSet         ();                 // Constructor
-CF_EXPORT LSQHashSetRef LSQHashSetRetain      (LSQHashSetRef);    // Retain
-CF_EXPORT void          LSQHashSetRelease     (LSQHashSetRef);    // Release
-CF_EXPORT void          LSQHashSetDealloc     (LSQHashSetRef);    // Free memory
-CF_EXPORT CFIndex       LSQHashSetGetCount    (LSQHashSetRef);
-CF_EXPORT CFIndex       LSQHashSetGetCapacity (LSQHashSetRef);
-CF_EXPORT Boolean       LSQHashSetContainsItem(LSQHashSetRef, LSQHashSetElement);
-CF_EXPORT Boolean       LSQHashSetAddItem     (LSQHashSetRef, LSQHashSetElement);
-CF_EXPORT Boolean       LSQHashSetRemoveItem  (LSQHashSetRef, LSQHashSetElement);
-CF_EXPORT Boolean       LSQHashSetRemoveAll   (LSQHashSetRef);
-CF_EXPORT void          LSQHashSetIterate     (LSQHashSetRef, LSQHashSetBlock);
-CF_EXPORT void          LSQHashSetIterateSync (LSQHashSetRef, LSQHashSetBlock);
-CF_EXPORT void          LSQHashSetIterateAsync(LSQHashSetRef, LSQHashSetBlock);
+CF_EXPORT              LSQHashSetRef NewLSQHashSet         ();                 // Constructor
+CF_EXPORT NO_NULL(1)   LSQHashSetRef LSQHashSetRetain      (LSQHashSetRef);    // Retain
+CF_EXPORT NO_NULL(1)   void          LSQHashSetRelease     (LSQHashSetRef);    // Release
+CF_EXPORT NO_NULL(1)   void          LSQHashSetDealloc     (LSQHashSetRef);    // Free memory
+CF_EXPORT NO_NULL(1)   CFIndex       LSQHashSetGetCount    (LSQHashSetRef);
+CF_EXPORT NO_NULL(1)   CFIndex       LSQHashSetGetCapacity (LSQHashSetRef);
+CF_EXPORT NO_NULL(1,2) Boolean       LSQHashSetContainsItem(LSQHashSetRef, LSQHashSetElement);
+CF_EXPORT NO_NULL(1,2) Boolean       LSQHashSetAddItem     (LSQHashSetRef, LSQHashSetElement);
+CF_EXPORT NO_NULL(1,2) Boolean       LSQHashSetRemoveItem  (LSQHashSetRef, LSQHashSetElement);
+CF_EXPORT NO_NULL(1)   Boolean       LSQHashSetRemoveAll   (LSQHashSetRef);
+CF_EXPORT NO_NULL(1,2) void          LSQHashSetIterate     (LSQHashSetRef, LSQHashSetBlock);
+CF_EXPORT NO_NULL(1,2) void          LSQHashSetIterateSync (LSQHashSetRef, LSQHashSetBlock);
+CF_EXPORT NO_NULL(1,2) void          LSQHashSetIterateAsync(LSQHashSetRef, LSQHashSetBlock);
 
 //________________________________________________________________________________________
 

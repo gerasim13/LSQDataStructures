@@ -38,29 +38,29 @@ typedef struct LSQArray_Data
 // Private functions
 typedef const struct LSQArrayVtable
 {
-    OSStatus   (*insert_node)     (LSQArrayRef, CFIndex, LSQNodeRef);    // Add item at index
-    OSStatus   (*remove_node)     (LSQArrayRef, CFIndex);                // Remove item at index
-    OSStatus   (*remove_all)      (LSQArrayRef);                         // Remove all nodes
-    OSStatus   (*get_node)        (LSQArrayRef, CFIndex, LSQNodeRef*);   // Get node at index
-    void       (*block_enumerate) (LSQArrayRef, CFRange, LSQArrayBlock); // Enumerate over nodes with block
+    NO_NULL(1,3) OSStatus (*insert_node)     (LSQArrayRef, CFIndex, LSQNodeRef);    // Add item at index
+    NO_NULL(1)   OSStatus (*remove_node)     (LSQArrayRef, CFIndex);                // Remove item at index
+    NO_NULL(1)   OSStatus (*remove_all)      (LSQArrayRef);                         // Remove all nodes
+    NO_NULL(1,3) OSStatus (*get_node)        (LSQArrayRef, CFIndex, LSQNodeRef*);   // Get node at index
+    NO_NULL(1,3) void     (*block_enumerate) (LSQArrayRef, CFRange, LSQArrayBlock); // Enumerate over nodes with block
 } LSQArrayVtable;
 
 //________________________________________________________________________________________
 
 #pragma mark - Functions
 
-CF_EXPORT LSQArrayRef NewLSQArray               (CFIndex, LSQBaseVtableRef);           // Shorthand for creating array
-CF_EXPORT void        LSQArrayInsertValueAtIndex(LSQArrayRef, CFIndex, void*);         // Insert data at index
-CF_EXPORT void        LSQArrayRemoveValueAtIndex(LSQArrayRef, CFIndex);                // Remove data
-CF_EXPORT void        LSQArrayRemoveAllValues   (LSQArrayRef);                         // Clear array
-CF_EXPORT void*       LSQArrayGetValueAtIndex   (LSQArrayRef, CFIndex);                // Get data from node at index
-CF_EXPORT void        LSQArrayEnumerate         (LSQArrayRef, CFRange, LSQArrayBlock); // Enumerate with block
-CF_EXPORT CFIndex     LSQArrayGetValueIndex     (LSQArrayRef, void*);                  // Get index of value
-CF_EXPORT CFIndex     LSQArrayGetCount          (LSQArrayRef);                         // Getting count
-CF_EXPORT CFIndex     LSQArrayGetCapacity       (LSQArrayRef);                         // Get capacity
-CF_EXPORT void*       LSQArrayRetain            (LSQArrayRef);                         // Retain array
-CF_EXPORT void        LSQArrayRelease           (LSQArrayRef);                         // Release array
-CF_EXPORT void        LSQArrayDealloc           (LSQArrayRef);                         // Dealloc array
+CF_EXPORT              LSQArrayRef NewLSQArray               (CFIndex, LSQBaseVtableRef);           // Shorthand for creating array
+CF_EXPORT NO_NULL(1,3) void        LSQArrayInsertValueAtIndex(LSQArrayRef, CFIndex, void*);         // Insert data at index
+CF_EXPORT NO_NULL(1)   void        LSQArrayRemoveValueAtIndex(LSQArrayRef, CFIndex);                // Remove data
+CF_EXPORT NO_NULL(1)   void        LSQArrayRemoveAllValues   (LSQArrayRef);                         // Clear array
+CF_EXPORT NO_NULL(1)   void*       LSQArrayGetValueAtIndex   (LSQArrayRef, CFIndex);                // Get data from node at index
+CF_EXPORT NO_NULL(1,3) void        LSQArrayEnumerate         (LSQArrayRef, CFRange, LSQArrayBlock); // Enumerate with block
+CF_EXPORT NO_NULL(1,2) CFIndex     LSQArrayGetValueIndex     (LSQArrayRef, void*);                  // Get index of value
+CF_EXPORT NO_NULL(1)   CFIndex     LSQArrayGetCount          (LSQArrayRef);                         // Getting count
+CF_EXPORT NO_NULL(1)   CFIndex     LSQArrayGetCapacity       (LSQArrayRef);                         // Get capacity
+CF_EXPORT NO_NULL(1)   void*       LSQArrayRetain            (LSQArrayRef);                         // Retain array
+CF_EXPORT NO_NULL(1)   void        LSQArrayRelease           (LSQArrayRef);                         // Release array
+CF_EXPORT NO_NULL(1)   void        LSQArrayDealloc           (LSQArrayRef);                         // Dealloc array
 
 //________________________________________________________________________________________
 

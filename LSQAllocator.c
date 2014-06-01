@@ -15,8 +15,8 @@
 
 //________________________________________________________________________________________
 
-static malloc_zone_t          zone;
-static malloc_introspection_t zone_introspect;
+static malloc_zone_t          __zone;
+static malloc_introspection_t __zone_introspect;
 
 //________________________________________________________________________________________
 
@@ -171,36 +171,36 @@ static void ned_free_definite_size(malloc_zone_t *zone, void *ptr, size_t size)
 
 static malloc_zone_t * malloc_ned_zone()
 {
-    zone.size               = (void *)ned_size;
-	zone.malloc             = (void *)ned_malloc;
-	zone.calloc             = (void *)ned_calloc;
-	zone.valloc             = (void *)ned_valloc;
-	zone.free               = (void *)ned_free;
-	zone.realloc            = (void *)ned_realloc;
-	zone.destroy            = (void *)ned_destroy;
-	zone.zone_name          = "nedmalloc_zone";
-	zone.batch_malloc       = ned_batch_malloc;
-	zone.batch_free         = ned_batch_free;
-	zone.introspect         = &zone_introspect;
-	zone.version            = 7;
-	zone.memalign           = ned_memalign;
-	zone.free_definite_size = ned_free_definite_size;
+    __zone.size               = (void *)ned_size;
+	__zone.malloc             = (void *)ned_malloc;
+	__zone.calloc             = (void *)ned_calloc;
+	__zone.valloc             = (void *)ned_valloc;
+	__zone.free               = (void *)ned_free;
+	__zone.realloc            = (void *)ned_realloc;
+	__zone.destroy            = (void *)ned_destroy;
+	__zone.zone_name          = "nedmalloc_zone";
+	__zone.batch_malloc       = ned_batch_malloc;
+	__zone.batch_free         = ned_batch_free;
+	__zone.introspect         = &__zone_introspect;
+	__zone.version            = 7;
+	__zone.memalign           = ned_memalign;
+	__zone.free_definite_size = ned_free_definite_size;
     
-	zone_introspect.enumerator                    = ned_enumerator;
-	zone_introspect.good_size                     = ned_good_size;
-	zone_introspect.check                         = ned_check;
-	zone_introspect.print                         = ned_print;
-	zone_introspect.log                           = ned_log;
-	zone_introspect.force_lock                    = (void *)ned_force_lock;
-	zone_introspect.force_unlock                  = (void *)ned_force_unlock;
-	zone_introspect.statistics                    = ned_statistics;
-	zone_introspect.zone_locked                   = ned_zone_locked;
-    zone_introspect.enable_discharge_checking     = ned_enable_discharge_checking;
-    zone_introspect.disable_discharge_checking    = ned_disable_discharge_checking;
-    zone_introspect.discharge                     = ned_discharge;
-    zone_introspect.enumerate_discharged_pointers = ned_enumerate_discharged_pointers;
+	__zone_introspect.enumerator                    = ned_enumerator;
+	__zone_introspect.good_size                     = ned_good_size;
+	__zone_introspect.check                         = ned_check;
+	__zone_introspect.print                         = ned_print;
+	__zone_introspect.log                           = ned_log;
+	__zone_introspect.force_lock                    = (void *)ned_force_lock;
+	__zone_introspect.force_unlock                  = (void *)ned_force_unlock;
+	__zone_introspect.statistics                    = ned_statistics;
+	__zone_introspect.zone_locked                   = ned_zone_locked;
+    __zone_introspect.enable_discharge_checking     = ned_enable_discharge_checking;
+    __zone_introspect.disable_discharge_checking    = ned_disable_discharge_checking;
+    __zone_introspect.discharge                     = ned_discharge;
+    __zone_introspect.enumerate_discharged_pointers = ned_enumerate_discharged_pointers;
     
-	return (&zone);
+	return (&__zone);
 }
 
 #endif
