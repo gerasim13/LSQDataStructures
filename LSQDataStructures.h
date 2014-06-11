@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Casual Underground. All rights reserved.
 //
 
+#include <CoreFoundation/CoreFoundation.h>
+
 CF_EXTERN_C_BEGIN
 
 #import "LSQCommon.h"
