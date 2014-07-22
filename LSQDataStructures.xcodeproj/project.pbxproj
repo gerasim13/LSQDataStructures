@@ -1,0 +1,549 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00634B6C197F09DD003E4BB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00634B6B197F09DD003E4BB0 /* Foundation.framework */; };
+		00634B7A197F09DD003E4BB0 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00634B79197F09DD003E4BB0 /* XCTest.framework */; };
+		00634B7B197F09DD003E4BB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00634B6B197F09DD003E4BB0 /* Foundation.framework */; };
+		00634B7D197F09DD003E4BB0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00634B7C197F09DD003E4BB0 /* UIKit.framework */; };
+		00634B80197F09DD003E4BB0 /* libLSQDataStructures.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00634B68197F09DD003E4BB0 /* libLSQDataStructures.a */; };
+		00634BB6197F0A38003E4BB0 /* LSQArray.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BA5197F0A38003E4BB0 /* LSQArray.c */; };
+		00634BB7197F0A38003E4BB0 /* LSQBase.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BA7197F0A38003E4BB0 /* LSQBase.c */; };
+		00634BB9197F0A38003E4BB0 /* LSQHashMap.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BAD197F0A38003E4BB0 /* LSQHashMap.c */; };
+		00634BBA197F0A38003E4BB0 /* LSQHashSet.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BAF197F0A38003E4BB0 /* LSQHashSet.c */; };
+		00634BBB197F0A38003E4BB0 /* LSQNode.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BB1197F0A38003E4BB0 /* LSQNode.c */; };
+		00634BBC197F0A38003E4BB0 /* LSQQueue.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BB3197F0A38003E4BB0 /* LSQQueue.c */; };
+		00634BC7197F0A59003E4BB0 /* LSQArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00634BC0197F0A59003E4BB0 /* LSQArrayTest.m */; };
+		00634BC8197F0A59003E4BB0 /* LSQBaseTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00634BC1197F0A59003E4BB0 /* LSQBaseTest.m */; };
+		00634BC9197F0A59003E4BB0 /* LSQDataStructuresTests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 00634BC2197F0A59003E4BB0 /* LSQDataStructuresTests-Info.plist */; };
+		00634BCA197F0A59003E4BB0 /* LSQHashSetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00634BC3197F0A59003E4BB0 /* LSQHashSetTest.m */; };
+		00634BCB197F0A59003E4BB0 /* LSQNodeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00634BC4197F0A59003E4BB0 /* LSQNodeTest.m */; };
+		00634BCC197F0A59003E4BB0 /* LSQQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00634BC5197F0A59003E4BB0 /* LSQQueueTest.m */; };
+		00634BCF197F0A71003E4BB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 00634BCD197F0A71003E4BB0 /* InfoPlist.strings */; };
+		00634BDB197F1086003E4BB0 /* LSQArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BA6197F0A38003E4BB0 /* LSQArray.h */; };
+		00634BDC197F1086003E4BB0 /* LSQBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BA8197F0A38003E4BB0 /* LSQBase.h */; };
+		00634BDD197F1086003E4BB0 /* LSQCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BA9197F0A38003E4BB0 /* LSQCommon.h */; };
+		00634BDE197F1086003E4BB0 /* LSQDataStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BAB197F0A38003E4BB0 /* LSQDataStructures.h */; };
+		00634BDF197F1086003E4BB0 /* LSQHashMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BAE197F0A38003E4BB0 /* LSQHashMap.h */; };
+		00634BE0197F1086003E4BB0 /* LSQHashSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB0197F0A38003E4BB0 /* LSQHashSet.h */; };
+		00634BE1197F1086003E4BB0 /* LSQNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB2197F0A38003E4BB0 /* LSQNode.h */; };
+		00634BE2197F1086003E4BB0 /* LSQQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB4197F0A38003E4BB0 /* LSQQueue.h */; };
+		00634BE8197F14BD003E4BB0 /* LSQAllocator.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BE6197F14BD003E4BB0 /* LSQAllocator.c */; };
+		00634BE9197F14BD003E4BB0 /* LSQAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BE7197F14BD003E4BB0 /* LSQAllocator.h */; };
+		00634BED197F14CA003E4BB0 /* malloc.c.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEA197F14CA003E4BB0 /* malloc.c.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BEB197F14CA003E4BB0 /* nedmalloc.c */; };
+		00634BEF197F14CA003E4BB0 /* nedmalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEC197F14CA003E4BB0 /* nedmalloc.h */; settings = {ATTRIBUTES = (Private, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		00634B7E197F09DD003E4BB0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00634B60197F09DD003E4BB0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00634B67197F09DD003E4BB0;
+			remoteInfo = LSQDataStructures;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		00634B66197F09DD003E4BB0 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		00634B68197F09DD003E4BB0 /* libLSQDataStructures.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libLSQDataStructures.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		00634B6B197F09DD003E4BB0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		00634B78197F09DD003E4BB0 /* LSQDataStructuresTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LSQDataStructuresTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00634B79197F09DD003E4BB0 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		00634B7C197F09DD003E4BB0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		00634BA3197F0A38003E4BB0 /* LSQAllocator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQAllocator.c; path = Code/LSQAllocator.c; sourceTree = SOURCE_ROOT; };
+		00634BA4197F0A38003E4BB0 /* LSQAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQAllocator.h; path = Code/LSQAllocator.h; sourceTree = SOURCE_ROOT; };
+		00634BA5197F0A38003E4BB0 /* LSQArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQArray.c; path = Code/LSQArray.c; sourceTree = SOURCE_ROOT; };
+		00634BA6197F0A38003E4BB0 /* LSQArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQArray.h; path = Code/LSQArray.h; sourceTree = SOURCE_ROOT; };
+		00634BA7197F0A38003E4BB0 /* LSQBase.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQBase.c; path = Code/LSQBase.c; sourceTree = SOURCE_ROOT; };
+		00634BA8197F0A38003E4BB0 /* LSQBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQBase.h; path = Code/LSQBase.h; sourceTree = SOURCE_ROOT; };
+		00634BA9197F0A38003E4BB0 /* LSQCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQCommon.h; path = Code/LSQCommon.h; sourceTree = SOURCE_ROOT; };
+		00634BAA197F0A38003E4BB0 /* LSQDataStructures-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "LSQDataStructures-Prefix.pch"; path = "Code/LSQDataStructures-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		00634BAB197F0A38003E4BB0 /* LSQDataStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQDataStructures.h; path = Code/LSQDataStructures.h; sourceTree = SOURCE_ROOT; };
+		00634BAD197F0A38003E4BB0 /* LSQHashMap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQHashMap.c; path = Code/LSQHashMap.c; sourceTree = SOURCE_ROOT; };
+		00634BAE197F0A38003E4BB0 /* LSQHashMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQHashMap.h; path = Code/LSQHashMap.h; sourceTree = SOURCE_ROOT; };
+		00634BAF197F0A38003E4BB0 /* LSQHashSet.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQHashSet.c; path = Code/LSQHashSet.c; sourceTree = SOURCE_ROOT; };
+		00634BB0197F0A38003E4BB0 /* LSQHashSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQHashSet.h; path = Code/LSQHashSet.h; sourceTree = SOURCE_ROOT; };
+		00634BB1197F0A38003E4BB0 /* LSQNode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQNode.c; path = Code/LSQNode.c; sourceTree = SOURCE_ROOT; };
+		00634BB2197F0A38003E4BB0 /* LSQNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQNode.h; path = Code/LSQNode.h; sourceTree = SOURCE_ROOT; };
+		00634BB3197F0A38003E4BB0 /* LSQQueue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQQueue.c; path = Code/LSQQueue.c; sourceTree = SOURCE_ROOT; };
+		00634BB4197F0A38003E4BB0 /* LSQQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQQueue.h; path = Code/LSQQueue.h; sourceTree = SOURCE_ROOT; };
+		00634BC0197F0A59003E4BB0 /* LSQArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LSQArrayTest.m; path = Tests/LSQArrayTest.m; sourceTree = SOURCE_ROOT; };
+		00634BC1197F0A59003E4BB0 /* LSQBaseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LSQBaseTest.m; path = Tests/LSQBaseTest.m; sourceTree = SOURCE_ROOT; };
+		00634BC2197F0A59003E4BB0 /* LSQDataStructuresTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "LSQDataStructuresTests-Info.plist"; path = "Tests/LSQDataStructuresTests-Info.plist"; sourceTree = SOURCE_ROOT; };
+		00634BC3197F0A59003E4BB0 /* LSQHashSetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LSQHashSetTest.m; path = Tests/LSQHashSetTest.m; sourceTree = SOURCE_ROOT; };
+		00634BC4197F0A59003E4BB0 /* LSQNodeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LSQNodeTest.m; path = Tests/LSQNodeTest.m; sourceTree = SOURCE_ROOT; };
+		00634BC5197F0A59003E4BB0 /* LSQQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LSQQueueTest.m; path = Tests/LSQQueueTest.m; sourceTree = SOURCE_ROOT; };
+		00634BCE197F0A71003E4BB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Tests/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
+		00634BE6197F14BD003E4BB0 /* LSQAllocator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQAllocator.c; path = Libraries/LSQLocklessAllocator/LSQAllocator.c; sourceTree = "<group>"; };
+		00634BE7197F14BD003E4BB0 /* LSQAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQAllocator.h; path = Libraries/LSQLocklessAllocator/LSQAllocator.h; sourceTree = "<group>"; };
+		00634BEA197F14CA003E4BB0 /* malloc.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = malloc.c.h; path = Libraries/LSQLocklessAllocator/nedmalloc/malloc.c.h; sourceTree = "<group>"; };
+		00634BEB197F14CA003E4BB0 /* nedmalloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nedmalloc.c; path = Libraries/LSQLocklessAllocator/nedmalloc/nedmalloc.c; sourceTree = "<group>"; };
+		00634BEC197F14CA003E4BB0 /* nedmalloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nedmalloc.h; path = Libraries/LSQLocklessAllocator/nedmalloc/nedmalloc.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		00634B65197F09DD003E4BB0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00634B6C197F09DD003E4BB0 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00634B75197F09DD003E4BB0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00634B7A197F09DD003E4BB0 /* XCTest.framework in Frameworks */,
+				00634B7D197F09DD003E4BB0 /* UIKit.framework in Frameworks */,
+				00634B80197F09DD003E4BB0 /* libLSQDataStructures.a in Frameworks */,
+				00634B7B197F09DD003E4BB0 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		00634B5F197F09DD003E4BB0 = {
+			isa = PBXGroup;
+			children = (
+				00634BD0197F0B15003E4BB0 /* Libraries */,
+				00634B6D197F09DD003E4BB0 /* Code */,
+				00634B81197F09DD003E4BB0 /* Tests */,
+				00634B6A197F09DD003E4BB0 /* Frameworks */,
+				00634B69197F09DD003E4BB0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		00634B69197F09DD003E4BB0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				00634B68197F09DD003E4BB0 /* libLSQDataStructures.a */,
+				00634B78197F09DD003E4BB0 /* LSQDataStructuresTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		00634B6A197F09DD003E4BB0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				00634B6B197F09DD003E4BB0 /* Foundation.framework */,
+				00634B79197F09DD003E4BB0 /* XCTest.framework */,
+				00634B7C197F09DD003E4BB0 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		00634B6D197F09DD003E4BB0 /* Code */ = {
+			isa = PBXGroup;
+			children = (
+				00634BA3197F0A38003E4BB0 /* LSQAllocator.c */,
+				00634BA4197F0A38003E4BB0 /* LSQAllocator.h */,
+				00634BA5197F0A38003E4BB0 /* LSQArray.c */,
+				00634BA6197F0A38003E4BB0 /* LSQArray.h */,
+				00634BA7197F0A38003E4BB0 /* LSQBase.c */,
+				00634BA8197F0A38003E4BB0 /* LSQBase.h */,
+				00634BA9197F0A38003E4BB0 /* LSQCommon.h */,
+				00634BAB197F0A38003E4BB0 /* LSQDataStructures.h */,
+				00634BAD197F0A38003E4BB0 /* LSQHashMap.c */,
+				00634BAE197F0A38003E4BB0 /* LSQHashMap.h */,
+				00634BAF197F0A38003E4BB0 /* LSQHashSet.c */,
+				00634BB0197F0A38003E4BB0 /* LSQHashSet.h */,
+				00634BB1197F0A38003E4BB0 /* LSQNode.c */,
+				00634BB2197F0A38003E4BB0 /* LSQNode.h */,
+				00634BB3197F0A38003E4BB0 /* LSQQueue.c */,
+				00634BB4197F0A38003E4BB0 /* LSQQueue.h */,
+				00634B6E197F09DD003E4BB0 /* Supporting Files */,
+			);
+			name = Code;
+			path = LSQDataStructures;
+			sourceTree = "<group>";
+		};
+		00634B6E197F09DD003E4BB0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				00634BAA197F0A38003E4BB0 /* LSQDataStructures-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		00634B81197F09DD003E4BB0 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				00634BC0197F0A59003E4BB0 /* LSQArrayTest.m */,
+				00634BC1197F0A59003E4BB0 /* LSQBaseTest.m */,
+				00634BC3197F0A59003E4BB0 /* LSQHashSetTest.m */,
+				00634BC4197F0A59003E4BB0 /* LSQNodeTest.m */,
+				00634BC5197F0A59003E4BB0 /* LSQQueueTest.m */,
+				00634B82197F09DD003E4BB0 /* Supporting Files */,
+			);
+			name = Tests;
+			path = LSQDataStructuresTests;
+			sourceTree = "<group>";
+		};
+		00634B82197F09DD003E4BB0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				00634BCD197F0A71003E4BB0 /* InfoPlist.strings */,
+				00634BC2197F0A59003E4BB0 /* LSQDataStructuresTests-Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		00634BD0197F0B15003E4BB0 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				00634BE5197F14B2003E4BB0 /* LSQLocklessAllocator */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		00634BE5197F14B2003E4BB0 /* LSQLocklessAllocator */ = {
+			isa = PBXGroup;
+			children = (
+				00634BE7197F14BD003E4BB0 /* LSQAllocator.h */,
+				00634BE6197F14BD003E4BB0 /* LSQAllocator.c */,
+				00634BEA197F14CA003E4BB0 /* malloc.c.h */,
+				00634BEC197F14CA003E4BB0 /* nedmalloc.h */,
+				00634BEB197F14CA003E4BB0 /* nedmalloc.c */,
+			);
+			name = LSQLocklessAllocator;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		00634BD9197F1072003E4BB0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00634BEF197F14CA003E4BB0 /* nedmalloc.h in Headers */,
+				00634BED197F14CA003E4BB0 /* malloc.c.h in Headers */,
+				00634BDB197F1086003E4BB0 /* LSQArray.h in Headers */,
+				00634BDC197F1086003E4BB0 /* LSQBase.h in Headers */,
+				00634BDD197F1086003E4BB0 /* LSQCommon.h in Headers */,
+				00634BDE197F1086003E4BB0 /* LSQDataStructures.h in Headers */,
+				00634BE9197F14BD003E4BB0 /* LSQAllocator.h in Headers */,
+				00634BDF197F1086003E4BB0 /* LSQHashMap.h in Headers */,
+				00634BE0197F1086003E4BB0 /* LSQHashSet.h in Headers */,
+				00634BE1197F1086003E4BB0 /* LSQNode.h in Headers */,
+				00634BE2197F1086003E4BB0 /* LSQQueue.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		00634B67197F09DD003E4BB0 /* LSQDataStructures */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00634B8B197F09DD003E4BB0 /* Build configuration list for PBXNativeTarget "LSQDataStructures" */;
+			buildPhases = (
+				00634BD9197F1072003E4BB0 /* Headers */,
+				00634B64197F09DD003E4BB0 /* Sources */,
+				00634B65197F09DD003E4BB0 /* Frameworks */,
+				00634B66197F09DD003E4BB0 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LSQDataStructures;
+			productName = LSQDataStructures;
+			productReference = 00634B68197F09DD003E4BB0 /* libLSQDataStructures.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		00634B77197F09DD003E4BB0 /* LSQDataStructuresTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00634B8E197F09DD003E4BB0 /* Build configuration list for PBXNativeTarget "LSQDataStructuresTests" */;
+			buildPhases = (
+				00634B74197F09DD003E4BB0 /* Sources */,
+				00634B75197F09DD003E4BB0 /* Frameworks */,
+				00634B76197F09DD003E4BB0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00634B7F197F09DD003E4BB0 /* PBXTargetDependency */,
+			);
+			name = LSQDataStructuresTests;
+			productName = LSQDataStructuresTests;
+			productReference = 00634B78197F09DD003E4BB0 /* LSQDataStructuresTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		00634B60197F09DD003E4BB0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Casual Underground";
+			};
+			buildConfigurationList = 00634B63197F09DD003E4BB0 /* Build configuration list for PBXProject "LSQDataStructures" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 00634B5F197F09DD003E4BB0;
+			productRefGroup = 00634B69197F09DD003E4BB0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				00634B67197F09DD003E4BB0 /* LSQDataStructures */,
+				00634B77197F09DD003E4BB0 /* LSQDataStructuresTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		00634B76197F09DD003E4BB0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00634BC9197F0A59003E4BB0 /* LSQDataStructuresTests-Info.plist in Resources */,
+				00634BCF197F0A71003E4BB0 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		00634B64197F09DD003E4BB0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00634BBC197F0A38003E4BB0 /* LSQQueue.c in Sources */,
+				00634BBB197F0A38003E4BB0 /* LSQNode.c in Sources */,
+				00634BB7197F0A38003E4BB0 /* LSQBase.c in Sources */,
+				00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */,
+				00634BB9197F0A38003E4BB0 /* LSQHashMap.c in Sources */,
+				00634BE8197F14BD003E4BB0 /* LSQAllocator.c in Sources */,
+				00634BB6197F0A38003E4BB0 /* LSQArray.c in Sources */,
+				00634BBA197F0A38003E4BB0 /* LSQHashSet.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00634B74197F09DD003E4BB0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00634BCA197F0A59003E4BB0 /* LSQHashSetTest.m in Sources */,
+				00634BCC197F0A59003E4BB0 /* LSQQueueTest.m in Sources */,
+				00634BC7197F0A59003E4BB0 /* LSQArrayTest.m in Sources */,
+				00634BCB197F0A59003E4BB0 /* LSQNodeTest.m in Sources */,
+				00634BC8197F0A59003E4BB0 /* LSQBaseTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		00634B7F197F09DD003E4BB0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00634B67197F09DD003E4BB0 /* LSQDataStructures */;
+			targetProxy = 00634B7E197F09DD003E4BB0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		00634BCD197F0A71003E4BB0 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				00634BCE197F0A71003E4BB0 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		00634B89197F09DD003E4BB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		00634B8A197F09DD003E4BB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		00634B8C197F09DD003E4BB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/LSQDataStructures.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Code/LSQDataStructures-Prefix.pch";
+				OTHER_CFLAGS = (
+					"-DTARGET_OS_IPHONE",
+					"-DMAP_STACK",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		00634B8D197F09DD003E4BB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/LSQDataStructures.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Code/LSQDataStructures-Prefix.pch";
+				OTHER_CFLAGS = (
+					"-DTARGET_OS_IPHONE",
+					"-DMAP_STACK",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		00634B8F197F09DD003E4BB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Code/LSQDataStructures-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "LSQDataStructuresTests/LSQDataStructuresTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		00634B90197F09DD003E4BB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Code/LSQDataStructures-Prefix.pch";
+				INFOPLIST_FILE = "LSQDataStructuresTests/LSQDataStructuresTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		00634B63197F09DD003E4BB0 /* Build configuration list for PBXProject "LSQDataStructures" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00634B89197F09DD003E4BB0 /* Debug */,
+				00634B8A197F09DD003E4BB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		00634B8B197F09DD003E4BB0 /* Build configuration list for PBXNativeTarget "LSQDataStructures" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00634B8C197F09DD003E4BB0 /* Debug */,
+				00634B8D197F09DD003E4BB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		00634B8E197F09DD003E4BB0 /* Build configuration list for PBXNativeTarget "LSQDataStructuresTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00634B8F197F09DD003E4BB0 /* Debug */,
+				00634B90197F09DD003E4BB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 00634B60197F09DD003E4BB0 /* Project object */;
+}
