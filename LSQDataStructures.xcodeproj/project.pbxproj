@@ -68,23 +68,21 @@
 		00634B78197F09DD003E4BB0 /* LSQDataStructuresTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LSQDataStructuresTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00634B79197F09DD003E4BB0 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		00634B7C197F09DD003E4BB0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		00634BA3197F0A38003E4BB0 /* LSQAllocator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQAllocator.c; path = Code/LSQAllocator.c; sourceTree = SOURCE_ROOT; };
-		00634BA4197F0A38003E4BB0 /* LSQAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQAllocator.h; path = Code/LSQAllocator.h; sourceTree = SOURCE_ROOT; };
-		00634BA5197F0A38003E4BB0 /* LSQArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQArray.c; path = Code/LSQArray.c; sourceTree = SOURCE_ROOT; };
-		00634BA6197F0A38003E4BB0 /* LSQArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQArray.h; path = Code/LSQArray.h; sourceTree = SOURCE_ROOT; };
-		00634BA7197F0A38003E4BB0 /* LSQBase.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQBase.c; path = Code/LSQBase.c; sourceTree = SOURCE_ROOT; };
-		00634BA8197F0A38003E4BB0 /* LSQBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQBase.h; path = Code/LSQBase.h; sourceTree = SOURCE_ROOT; };
-		00634BA9197F0A38003E4BB0 /* LSQCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQCommon.h; path = Code/LSQCommon.h; sourceTree = SOURCE_ROOT; };
+		00634BA5197F0A38003E4BB0 /* LSQArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LSQArray.c; sourceTree = "<group>"; };
+		00634BA6197F0A38003E4BB0 /* LSQArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSQArray.h; sourceTree = "<group>"; };
+		00634BA7197F0A38003E4BB0 /* LSQBase.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LSQBase.c; sourceTree = "<group>"; };
+		00634BA8197F0A38003E4BB0 /* LSQBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSQBase.h; sourceTree = "<group>"; };
+		00634BA9197F0A38003E4BB0 /* LSQCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSQCommon.h; sourceTree = "<group>"; };
 		00634BAA197F0A38003E4BB0 /* LSQDataStructures-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "LSQDataStructures-Prefix.pch"; path = "Code/LSQDataStructures-Prefix.pch"; sourceTree = SOURCE_ROOT; };
-		00634BAB197F0A38003E4BB0 /* LSQDataStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQDataStructures.h; path = Code/LSQDataStructures.h; sourceTree = SOURCE_ROOT; };
-		00634BAD197F0A38003E4BB0 /* LSQHashMap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQHashMap.c; path = Code/LSQHashMap.c; sourceTree = SOURCE_ROOT; };
-		00634BAE197F0A38003E4BB0 /* LSQHashMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQHashMap.h; path = Code/LSQHashMap.h; sourceTree = SOURCE_ROOT; };
-		00634BAF197F0A38003E4BB0 /* LSQHashSet.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQHashSet.c; path = Code/LSQHashSet.c; sourceTree = SOURCE_ROOT; };
-		00634BB0197F0A38003E4BB0 /* LSQHashSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQHashSet.h; path = Code/LSQHashSet.h; sourceTree = SOURCE_ROOT; };
-		00634BB1197F0A38003E4BB0 /* LSQNode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQNode.c; path = Code/LSQNode.c; sourceTree = SOURCE_ROOT; };
-		00634BB2197F0A38003E4BB0 /* LSQNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQNode.h; path = Code/LSQNode.h; sourceTree = SOURCE_ROOT; };
-		00634BB3197F0A38003E4BB0 /* LSQQueue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQQueue.c; path = Code/LSQQueue.c; sourceTree = SOURCE_ROOT; };
-		00634BB4197F0A38003E4BB0 /* LSQQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQQueue.h; path = Code/LSQQueue.h; sourceTree = SOURCE_ROOT; };
+		00634BAB197F0A38003E4BB0 /* LSQDataStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSQDataStructures.h; sourceTree = "<group>"; };
+		00634BAD197F0A38003E4BB0 /* LSQHashMap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LSQHashMap.c; sourceTree = "<group>"; };
+		00634BAE197F0A38003E4BB0 /* LSQHashMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSQHashMap.h; sourceTree = "<group>"; };
+		00634BAF197F0A38003E4BB0 /* LSQHashSet.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LSQHashSet.c; sourceTree = "<group>"; };
+		00634BB0197F0A38003E4BB0 /* LSQHashSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSQHashSet.h; sourceTree = "<group>"; };
+		00634BB1197F0A38003E4BB0 /* LSQNode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LSQNode.c; sourceTree = "<group>"; };
+		00634BB2197F0A38003E4BB0 /* LSQNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSQNode.h; sourceTree = "<group>"; };
+		00634BB3197F0A38003E4BB0 /* LSQQueue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LSQQueue.c; sourceTree = "<group>"; };
+		00634BB4197F0A38003E4BB0 /* LSQQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSQQueue.h; sourceTree = "<group>"; };
 		00634BC0197F0A59003E4BB0 /* LSQArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LSQArrayTest.m; path = Tests/LSQArrayTest.m; sourceTree = SOURCE_ROOT; };
 		00634BC1197F0A59003E4BB0 /* LSQBaseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LSQBaseTest.m; path = Tests/LSQBaseTest.m; sourceTree = SOURCE_ROOT; };
 		00634BC2197F0A59003E4BB0 /* LSQDataStructuresTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "LSQDataStructuresTests-Info.plist"; path = "Tests/LSQDataStructuresTests-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -155,8 +153,6 @@
 		00634B6D197F09DD003E4BB0 /* Code */ = {
 			isa = PBXGroup;
 			children = (
-				00634BA3197F0A38003E4BB0 /* LSQAllocator.c */,
-				00634BA4197F0A38003E4BB0 /* LSQAllocator.h */,
 				00634BA5197F0A38003E4BB0 /* LSQArray.c */,
 				00634BA6197F0A38003E4BB0 /* LSQArray.h */,
 				00634BA7197F0A38003E4BB0 /* LSQBase.c */,
@@ -173,8 +169,7 @@
 				00634BB4197F0A38003E4BB0 /* LSQQueue.h */,
 				00634B6E197F09DD003E4BB0 /* Supporting Files */,
 			);
-			name = Code;
-			path = LSQDataStructures;
+			path = Code;
 			sourceTree = "<group>";
 		};
 		00634B6E197F09DD003E4BB0 /* Supporting Files */ = {
