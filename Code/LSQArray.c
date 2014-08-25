@@ -304,10 +304,11 @@ LSQArrayRef NewLSQArray(CFIndex capacity, LSQBaseVtableRef vtable)
     array->data.capacity = (int32_t)capacity;
     array->data.count    = 0;
     // Fill array with NULL
-    for (CFIndex i = 0; i < capacity; ++i)
-    {
-        array->data.elements[i] = NULL;
-    }
+    memset(array->data.elements, 0, capacity * sizeof(LSQNodeRef));
+//    for (CFIndex i = 0; i < capacity; ++i)
+//    {
+//        array->data.elements[i] = NULL;
+//    }
     return array;
 }
 
