@@ -26,6 +26,7 @@ typedef struct LSQHashMap *LSQHashMapRef;
 
 typedef struct LSQHashMap_Data
 {
+    void * data;
 } LSQHashMap_Data;
 
 //________________________________________________________________________________________
