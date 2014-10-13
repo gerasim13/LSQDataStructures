@@ -25,16 +25,16 @@
 		00634BCB197F0A59003E4BB0 /* LSQNodeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00634BC4197F0A59003E4BB0 /* LSQNodeTest.m */; };
 		00634BCC197F0A59003E4BB0 /* LSQQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00634BC5197F0A59003E4BB0 /* LSQQueueTest.m */; };
 		00634BCF197F0A71003E4BB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 00634BCD197F0A71003E4BB0 /* InfoPlist.strings */; };
-		00634BDB197F1086003E4BB0 /* LSQArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BA6197F0A38003E4BB0 /* LSQArray.h */; };
-		00634BDC197F1086003E4BB0 /* LSQBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BA8197F0A38003E4BB0 /* LSQBase.h */; };
-		00634BDD197F1086003E4BB0 /* LSQCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BA9197F0A38003E4BB0 /* LSQCommon.h */; };
-		00634BDE197F1086003E4BB0 /* LSQDataStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BAB197F0A38003E4BB0 /* LSQDataStructures.h */; };
-		00634BDF197F1086003E4BB0 /* LSQHashMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BAE197F0A38003E4BB0 /* LSQHashMap.h */; };
-		00634BE0197F1086003E4BB0 /* LSQHashSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB0197F0A38003E4BB0 /* LSQHashSet.h */; };
-		00634BE1197F1086003E4BB0 /* LSQNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB2197F0A38003E4BB0 /* LSQNode.h */; };
-		00634BE2197F1086003E4BB0 /* LSQQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB4197F0A38003E4BB0 /* LSQQueue.h */; };
+		00634BDB197F1086003E4BB0 /* LSQArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BA6197F0A38003E4BB0 /* LSQArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		00634BDC197F1086003E4BB0 /* LSQBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BA8197F0A38003E4BB0 /* LSQBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		00634BDD197F1086003E4BB0 /* LSQCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BA9197F0A38003E4BB0 /* LSQCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		00634BDE197F1086003E4BB0 /* LSQDataStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BAB197F0A38003E4BB0 /* LSQDataStructures.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		00634BDF197F1086003E4BB0 /* LSQHashMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BAE197F0A38003E4BB0 /* LSQHashMap.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		00634BE0197F1086003E4BB0 /* LSQHashSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB0197F0A38003E4BB0 /* LSQHashSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		00634BE1197F1086003E4BB0 /* LSQNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB2197F0A38003E4BB0 /* LSQNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		00634BE2197F1086003E4BB0 /* LSQQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB4197F0A38003E4BB0 /* LSQQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00634BE8197F14BD003E4BB0 /* LSQAllocator.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BE6197F14BD003E4BB0 /* LSQAllocator.c */; };
-		00634BE9197F14BD003E4BB0 /* LSQAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BE7197F14BD003E4BB0 /* LSQAllocator.h */; };
+		00634BE9197F14BD003E4BB0 /* LSQAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BE7197F14BD003E4BB0 /* LSQAllocator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00634BED197F14CA003E4BB0 /* malloc.c.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEA197F14CA003E4BB0 /* malloc.c.h */; };
 		00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BEB197F14CA003E4BB0 /* nedmalloc.c */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-checker"; }; };
 		00634BEF197F14CA003E4BB0 /* nedmalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEC197F14CA003E4BB0 /* nedmalloc.h */; };
@@ -230,8 +230,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00634BEF197F14CA003E4BB0 /* nedmalloc.h in Headers */,
-				00634BED197F14CA003E4BB0 /* malloc.c.h in Headers */,
 				00634BDB197F1086003E4BB0 /* LSQArray.h in Headers */,
 				00634BDC197F1086003E4BB0 /* LSQBase.h in Headers */,
 				00634BDD197F1086003E4BB0 /* LSQCommon.h in Headers */,
@@ -241,6 +239,8 @@
 				00634BE0197F1086003E4BB0 /* LSQHashSet.h in Headers */,
 				00634BE1197F1086003E4BB0 /* LSQNode.h in Headers */,
 				00634BE2197F1086003E4BB0 /* LSQQueue.h in Headers */,
+				00634BEF197F14CA003E4BB0 /* nedmalloc.h in Headers */,
+				00634BED197F14CA003E4BB0 /* malloc.c.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -405,6 +405,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				ONLY_ACTIVE_ARCH = YES;
+				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -435,6 +436,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
