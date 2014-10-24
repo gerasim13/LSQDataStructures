@@ -59,6 +59,13 @@ CF_EXPORT NO_NULL(1) bool           LSQNodeSetBackFront(LSQNodeRef, LSQNodeRef);
 
 //________________________________________________________________________________________
 
+#pragma mark - CoreFoundation Callbacks
+
+const void * LSQNodeRetainCallBack (CFAllocatorRef allocator, const void *value);
+void         LSQNodeReleaseCallBack(CFAllocatorRef allocator, const void *value);
+
+//________________________________________________________________________________________
+
 CF_EXTERN_C_END
 
 //________________________________________________________________________________________

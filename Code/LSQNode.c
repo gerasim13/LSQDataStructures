@@ -189,3 +189,17 @@ bool LSQNodeSetBackFront(LSQNodeRef self, LSQNodeRef node)
 {
     return LSQNodeSetBack(self, node) && LSQNodeSetFront(self, node);
 }
+
+//________________________________________________________________________________________
+
+#pragma mark - CoreFoundation Callbacks
+
+const void * LSQNodeRetainCallBack(CFAllocatorRef allocator, const void *value)
+{
+    return LSQNodeRetain((LSQNodeRef)value);
+}
+
+void LSQNodeReleaseCallBack(CFAllocatorRef allocator, const void *value)
+{
+    LSQNodeRelease((LSQNodeRef)value);
+}
