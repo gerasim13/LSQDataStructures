@@ -36,7 +36,7 @@
 		00634BE8197F14BD003E4BB0 /* LSQAllocator.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BE6197F14BD003E4BB0 /* LSQAllocator.c */; };
 		00634BE9197F14BD003E4BB0 /* LSQAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BE7197F14BD003E4BB0 /* LSQAllocator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00634BED197F14CA003E4BB0 /* malloc.c.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEA197F14CA003E4BB0 /* malloc.c.h */; };
-		00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BEB197F14CA003E4BB0 /* nedmalloc.c */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-checker"; }; };
+		00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BEB197F14CA003E4BB0 /* nedmalloc.c */; };
 		00634BEF197F14CA003E4BB0 /* nedmalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEC197F14CA003E4BB0 /* nedmalloc.h */; };
 /* End PBXBuildFile section */
 
@@ -453,6 +453,7 @@
 				OTHER_CFLAGS = (
 					"-DTARGET_OS_IPHONE",
 					"-DMAP_STACK",
+					"-DDEBUG",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -471,6 +472,7 @@
 				OTHER_CFLAGS = (
 					"-DTARGET_OS_IPHONE",
 					"-DMAP_STACK",
+					"-DNDEBUG",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
