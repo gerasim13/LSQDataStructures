@@ -36,7 +36,7 @@
 		00634BE8197F14BD003E4BB0 /* LSQAllocator.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BE6197F14BD003E4BB0 /* LSQAllocator.c */; };
 		00634BE9197F14BD003E4BB0 /* LSQAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BE7197F14BD003E4BB0 /* LSQAllocator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00634BED197F14CA003E4BB0 /* malloc.c.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEA197F14CA003E4BB0 /* malloc.c.h */; };
-		00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BEB197F14CA003E4BB0 /* nedmalloc.c */; };
+		00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BEB197F14CA003E4BB0 /* nedmalloc.c */; settings = {COMPILER_FLAGS = "-Wno-implicit"; }; };
 		00634BEF197F14CA003E4BB0 /* nedmalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEC197F14CA003E4BB0 /* nedmalloc.h */; };
 /* End PBXBuildFile section */
 
@@ -327,10 +327,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */,
 				00634BBC197F0A38003E4BB0 /* LSQQueue.c in Sources */,
 				00634BBB197F0A38003E4BB0 /* LSQNode.c in Sources */,
 				00634BB7197F0A38003E4BB0 /* LSQBase.c in Sources */,
-				00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */,
 				00634BB9197F0A38003E4BB0 /* LSQHashMap.c in Sources */,
 				00634BE8197F14BD003E4BB0 /* LSQAllocator.c in Sources */,
 				00634BB6197F0A38003E4BB0 /* LSQArray.c in Sources */,
@@ -452,7 +452,6 @@
 				GCC_WARN_PEDANTIC = NO;
 				OTHER_CFLAGS = (
 					"-DTARGET_OS_IPHONE",
-					"-DMAP_STACK",
 					"-DDEBUG",
 				);
 				OTHER_LDFLAGS = "-ObjC";
@@ -471,7 +470,6 @@
 				GCC_WARN_PEDANTIC = NO;
 				OTHER_CFLAGS = (
 					"-DTARGET_OS_IPHONE",
-					"-DMAP_STACK",
 					"-DNDEBUG",
 				);
 				OTHER_LDFLAGS = "-ObjC";
