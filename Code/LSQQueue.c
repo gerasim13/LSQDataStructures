@@ -476,7 +476,7 @@ void LSQQueueDealloc(LSQQueueRef self)
 void LSQQueuePushTail(LSQQueueRef self, void *value)
 {
     // Add item to tail
-    if (value != NULL && self != NULL && self->vtable->push_back != NULL)
+    if (value && self && self->vtable->push_back != NULL)
     {
         LSQNodeRef node = NewLSQNode(value, self->callbacks);
         self->vtable->push_back(self, node);
@@ -486,7 +486,7 @@ void LSQQueuePushTail(LSQQueueRef self, void *value)
 void LSQQueuePushHead(LSQQueueRef self, void *value)
 {
     // Add item to head
-    if (value != NULL && self != NULL && self->vtable->push_front != NULL)
+    if (value && self && self->vtable->push_front != NULL)
     {
         LSQNodeRef node = NewLSQNode(value, self->callbacks);
         self->vtable->push_front(self, node);
@@ -496,7 +496,7 @@ void LSQQueuePushHead(LSQQueueRef self, void *value)
 LSQNodeRef LSQQueuePopTail(LSQQueueRef self)
 {
     // Get item from tail and remove it from queue
-    if (self != NULL && self->vtable->pop_tail != NULL)
+    if (self && self->vtable->pop_tail != NULL)
     {
         LSQNodeRef node;
         if (self->vtable->pop_tail(self, &node) == noErr)
@@ -510,7 +510,7 @@ LSQNodeRef LSQQueuePopTail(LSQQueueRef self)
 LSQNodeRef LSQQueuePopHead(LSQQueueRef self)
 {
     // Get item from head and remove it from queue
-    if (self != NULL && self->vtable->pop_head != NULL)
+    if (self && self->vtable->pop_head != NULL)
     {
         LSQNodeRef node;
         if (self->vtable->pop_head(self, &node) == noErr)
@@ -524,7 +524,7 @@ LSQNodeRef LSQQueuePopHead(LSQQueueRef self)
 LSQNodeRef LSQQueueHead(LSQQueueRef self)
 {
     // Get item from head but keep it in queue
-    if (self != NULL && self->data.head != NULL)
+    if (self && self->data.head != NULL)
     {
         return self->data.head;
     }
@@ -534,7 +534,7 @@ LSQNodeRef LSQQueueHead(LSQQueueRef self)
 LSQNodeRef LSQQueueTail(LSQQueueRef self)
 {
     // Get item from tail but keep it in queue
-    if (self != NULL && self->data.tail != NULL)
+    if (self && self->data.tail != NULL)
     {
         return self->data.tail;
     }
@@ -544,7 +544,7 @@ LSQNodeRef LSQQueueTail(LSQQueueRef self)
 LSQNodeRef LSQQueueGetNodeAtIndex(LSQQueueRef self, CFIndex index)
 {
     // Get node at index
-    if (self != NULL && self->vtable->get_node != NULL)
+    if (self && self->vtable->get_node != NULL)
     {
         LSQNodeRef node;
         if (self->vtable->get_node(self, index, &node) == noErr)
@@ -557,7 +557,7 @@ LSQNodeRef LSQQueueGetNodeAtIndex(LSQQueueRef self, CFIndex index)
 
 CFIndex LSQQueueGetCount(LSQQueueRef self)
 {
-    if (self != NULL)
+    if (self)
     {
         return self->data.count;
     }
@@ -566,7 +566,7 @@ CFIndex LSQQueueGetCount(LSQQueueRef self)
 
 CFIndex LSQQueueGetCapacity(LSQQueueRef self)
 {
-    if (self != NULL)
+    if (self)
     {
         return self->data.capacity;
     }
