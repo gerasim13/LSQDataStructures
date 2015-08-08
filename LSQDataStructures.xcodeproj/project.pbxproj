@@ -457,6 +457,7 @@
 				DSTROOT = /tmp/LSQDataStructures.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Code/LSQDataStructures-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_PEDANTIC = NO;
 				OTHER_CFLAGS = (
