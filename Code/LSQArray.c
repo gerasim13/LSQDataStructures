@@ -35,8 +35,9 @@ enum
 
 #pragma mark - Hidden Functions
 
-OSStatus insert_at_index_check(LSQArrayRef array, CFIndex index, LSQNodeRef node)
+CF_INLINE OSStatus insert_at_index_check(LSQArrayRef array, CFIndex index, LSQNodeRef node)
 {
+#ifndef PRODUCTION
     // Return error code for insert function
     if (array == NULL || node == NULL)
     {
@@ -50,11 +51,13 @@ OSStatus insert_at_index_check(LSQArrayRef array, CFIndex index, LSQNodeRef node
     {
         return LSQArrayError_ArrayNotInit;
     }
+#endif
     return noErr;
 }
 
-OSStatus remove_at_index_check(LSQArrayRef array, CFIndex index)
+CF_INLINE OSStatus remove_at_index_check(LSQArrayRef array, CFIndex index)
 {
+#ifndef PRODUCTION
     // Return error code for remove function
     if (array == NULL)
     {
@@ -68,11 +71,13 @@ OSStatus remove_at_index_check(LSQArrayRef array, CFIndex index)
     {
         return LSQArrayError_ArrayNotInit;
     }
+#endif
     return noErr;
 }
 
-OSStatus remove_all_check(LSQArrayRef array)
+CF_INLINE OSStatus remove_all_check(LSQArrayRef array)
 {
+#ifndef PRODUCTION
     // Return error code for remove all function
     if (array == NULL)
     {
@@ -82,11 +87,13 @@ OSStatus remove_all_check(LSQArrayRef array)
     {
         return LSQArrayError_ArrayNotInit;
     }
+#endif
     return noErr;
 }
 
-OSStatus get_node_at_index_check(LSQArrayRef array, CFIndex index)
+CF_INLINE OSStatus get_node_at_index_check(LSQArrayRef array, CFIndex index)
 {
+#ifndef PRODUCTION
     // Return error code for get function
     if (array == NULL)
     {
@@ -100,6 +107,7 @@ OSStatus get_node_at_index_check(LSQArrayRef array, CFIndex index)
     {
         return LSQArrayError_ArrayNotInit;
     }
+#endif
     return noErr;
 }
 
@@ -305,10 +313,6 @@ LSQArrayRef NewLSQArray(CFIndex capacity, LSQBaseVtableRef vtable)
     array->data.count    = 0;
     // Fill array with NULL
     memset(array->data.elements, 0, capacity * sizeof(LSQNodeRef));
-//    for (CFIndex i = 0; i < capacity; ++i)
-//    {
-//        array->data.elements[i] = NULL;
-//    }
     return array;
 }
 
