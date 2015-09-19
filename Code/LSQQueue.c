@@ -142,7 +142,7 @@ bool try_push_front(LSQQueueRef queue, LSQNodeRef node)
     while (!success)
     {
         head = queue->data.head;
-        prev = LSQNodeGetBack(head);
+        prev = head ? LSQNodeGetBack(head) : NULL;
         // Was Head pointing to the first node?
         if (prev == NULL)
         {
@@ -172,7 +172,7 @@ bool try_pop_front(LSQQueueRef queue, LSQNodeRef* node)
     {
         tail = queue->data.tail;
         head = queue->data.head;
-        next = LSQNodeGetFront(head);
+        next = head ? LSQNodeGetFront(head) : NULL;
         // Are head, tail, and next consistent?
         // Is queue empty or Tail falling behind?
         if (head == tail)
