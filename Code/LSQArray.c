@@ -346,7 +346,7 @@ void LSQArrayDealloc(LSQArrayRef self)
 
 void LSQArrayInsertValueAtIndex(LSQArrayRef self, CFIndex index, void* value)
 {
-    if (value && self && self->vtable->insert_node != NULL)
+    if (self->vtable->insert_node != NULL)
     {
         LSQNodeRef node = NewLSQNode(value, self->callbacks);
         self->vtable->insert_node(self, index, node);
@@ -355,7 +355,7 @@ void LSQArrayInsertValueAtIndex(LSQArrayRef self, CFIndex index, void* value)
 
 void LSQArrayRemoveValueAtIndex(LSQArrayRef self, CFIndex index)
 {
-    if (self && self->vtable->remove_node != NULL)
+    if (self->vtable->remove_node != NULL)
     {
         self->vtable->remove_node(self, index);
     }
@@ -363,7 +363,7 @@ void LSQArrayRemoveValueAtIndex(LSQArrayRef self, CFIndex index)
 
 void LSQArrayRemoveAllValues(LSQArrayRef self)
 {
-    if (self && self->vtable->remove_all != NULL)
+    if (self->vtable->remove_all != NULL)
     {
         self->vtable->remove_all(self);
     }
@@ -371,7 +371,7 @@ void LSQArrayRemoveAllValues(LSQArrayRef self)
 
 void* LSQArrayGetValueAtIndex(LSQArrayRef self, CFIndex index)
 {
-    if (self && self->vtable->get_node != NULL)
+    if (self->vtable->get_node != NULL)
     {
         LSQNodeRef node;
         if (self->vtable->get_node(self, index, &node) == noErr)
@@ -384,7 +384,7 @@ void* LSQArrayGetValueAtIndex(LSQArrayRef self, CFIndex index)
 
 void LSQArrayEnumerate(LSQArrayRef self, CFRange range, LSQArrayBlock block)
 {
-    if (self && self->vtable->block_enumerate != NULL)
+    if (self->vtable->block_enumerate != NULL)
     {
         self->vtable->block_enumerate(self, range, block);
     }
@@ -392,17 +392,14 @@ void LSQArrayEnumerate(LSQArrayRef self, CFRange range, LSQArrayBlock block)
 
 CFIndex LSQArrayGetValueIndex(LSQArrayRef self, void* value)
 {
-    if (self && value)
+    // Seqrch for node with value
+    for (int i = 0; i < self->data.count; ++i)
     {
-        // Seqrch for node with value
-        for (int i = 0; i < self->data.count; ++i)
+        LSQNodeRef node = NULL;
+        if (self->vtable->get_node(self, i, &node) == noErr &&
+            node != NULL && LSQNodeGetContent(node) == value)
         {
-            LSQNodeRef node = NULL;
-            if (self->vtable->get_node(self, i, &node) == noErr &&
-                node != NULL && LSQNodeGetContent(node) == value)
-            {
-                return i;
-            }
+            return i;
         }
     }
     return NAN;
@@ -410,18 +407,10 @@ CFIndex LSQArrayGetValueIndex(LSQArrayRef self, void* value)
 
 CFIndex LSQArrayGetCount(LSQArrayRef self)
 {
-    if (self)
-    {
-        return self->data.count;
-    }
-    return NAN;
+    return self->data.count;
 }
 
 CFIndex LSQArrayGetCapacity(LSQArrayRef self)
 {
-    if (self)
-    {
-        return self->data.capacity;
-    }
-    return NAN;
+    return self->data.capacity;
 }

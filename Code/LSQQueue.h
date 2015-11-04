@@ -49,19 +49,19 @@ typedef const struct LSQQueueVtable
 
 #pragma mark - Functions
 
-CF_EXPORT            LSQQueueRef NewLSQQueue           (CFIndex, LSQBaseVtableRef); // Shorthand for creating queue
-CF_EXPORT NO_NULL(1) void        LSQQueuePushTail      (LSQQueueRef, void *);       // Add item to tail
-CF_EXPORT NO_NULL(1) void        LSQQueuePushHead      (LSQQueueRef, void *);       // Add item to head
-CF_EXPORT NO_NULL(1) LSQNodeRef  LSQQueuePopTail       (LSQQueueRef);               // Get item from tail and remove it from queue
-CF_EXPORT NO_NULL(1) LSQNodeRef  LSQQueuePopHead       (LSQQueueRef);               // Get item from head and remove it from queue
-CF_EXPORT NO_NULL(1) LSQNodeRef  LSQQueueHead          (LSQQueueRef);               // Get item from head but keep it in queue
-CF_EXPORT NO_NULL(1) LSQNodeRef  LSQQueueTail          (LSQQueueRef);               // Get item from tail but keep it in queue
-CF_EXPORT NO_NULL(1) LSQNodeRef  LSQQueueGetNodeAtIndex(LSQQueueRef, CFIndex);      // Get node at index
-CF_EXPORT NO_NULL(1) CFIndex     LSQQueueGetCount      (LSQQueueRef);               // Get queue size
-CF_EXPORT NO_NULL(1) CFIndex     LSQQueueGetCapacity   (LSQQueueRef);               // Get queue capacity
-CF_EXPORT NO_NULL(1) void*       LSQQueueRetain        (LSQQueueRef);               // Retain queue
-CF_EXPORT NO_NULL(1) void        LSQQueueRelease       (LSQQueueRef);               // Release queue
-CF_EXPORT NO_NULL(1) void        LSQQueueDealloc       (LSQQueueRef);               // Dealloc queue
+CF_EXPORT              LSQQueueRef NewLSQQueue           (CFIndex, LSQBaseVtableRef); // Shorthand for creating queue
+CF_EXPORT NO_NULL(1,2) void        LSQQueuePushTail      (LSQQueueRef, void *);       // Add item to tail
+CF_EXPORT NO_NULL(1,2) void        LSQQueuePushHead      (LSQQueueRef, void *);       // Add item to head
+CF_EXPORT NO_NULL(1)   LSQNodeRef  LSQQueuePopTail       (LSQQueueRef);               // Get item from tail and remove it from queue
+CF_EXPORT NO_NULL(1)   LSQNodeRef  LSQQueuePopHead       (LSQQueueRef);               // Get item from head and remove it from queue
+CF_EXPORT NO_NULL(1)   LSQNodeRef  LSQQueueHead          (LSQQueueRef);               // Get item from head but keep it in queue
+CF_EXPORT NO_NULL(1)   LSQNodeRef  LSQQueueTail          (LSQQueueRef);               // Get item from tail but keep it in queue
+CF_EXPORT NO_NULL(1)   LSQNodeRef  LSQQueueGetNodeAtIndex(LSQQueueRef, CFIndex);      // Get node at index
+CF_EXPORT NO_NULL(1)   CFIndex     LSQQueueGetCount      (LSQQueueRef);               // Get queue size
+CF_EXPORT NO_NULL(1)   CFIndex     LSQQueueGetCapacity   (LSQQueueRef);               // Get queue capacity
+CF_EXPORT NO_NULL(1)   void*       LSQQueueRetain        (LSQQueueRef);               // Retain queue
+CF_EXPORT NO_NULL(1)   void        LSQQueueRelease       (LSQQueueRef);               // Release queue
+CF_EXPORT NO_NULL(1)   void        LSQQueueDealloc       (LSQQueueRef);               // Dealloc queue
 
 //________________________________________________________________________________________
 

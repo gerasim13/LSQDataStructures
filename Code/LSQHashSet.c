@@ -456,25 +456,22 @@ void LSQHashSetDealloc (LSQHashSetRef self)
 
 CFIndex LSQHashSetGetCount(LSQHashSetRef self)
 {
-    if (self)
-    {
-        return self->data.count;
-    }
+    assert(self != NULL);
+    return self->data.count;
     return NAN;
 }
 
 CFIndex LSQHashSetGetCapacity(LSQHashSetRef self)
 {
-    if (self)
-    {
-        return self->data.capacity;
-    }
-    return NAN;
+    assert(self != NULL);
+    return self->data.capacity;
 }
 
 Boolean LSQHashSetAddItem(LSQHashSetRef self, LSQHashSetElement element)
 {
-    if (element && self && self->vtable->insert != NULL)
+    assert(self != NULL);
+    assert(element != NULL);
+    if (self->vtable->insert != NULL)
     {
         return self->vtable->insert(self, element) == noErr;
     }
@@ -483,7 +480,9 @@ Boolean LSQHashSetAddItem(LSQHashSetRef self, LSQHashSetElement element)
 
 Boolean LSQHashSetRemoveItem(LSQHashSetRef self, LSQHashSetElement element)
 {
-    if (element && self  && self->vtable->remove != NULL)
+    assert(self != NULL);
+    assert(element != NULL);
+    if (self->vtable->remove != NULL)
     {
         return self->vtable->remove(self, element) == noErr;
     }
@@ -492,7 +491,8 @@ Boolean LSQHashSetRemoveItem(LSQHashSetRef self, LSQHashSetElement element)
 
 Boolean LSQHashSetRemoveAll(LSQHashSetRef self)
 {
-    if (self && self->vtable->remove_all != NULL)
+    assert(self != NULL);
+    if (self->vtable->remove_all != NULL)
     {
         return self->vtable->remove_all(self) == noErr;
     }
@@ -501,7 +501,8 @@ Boolean LSQHashSetRemoveAll(LSQHashSetRef self)
 
 Boolean LSQHashSetContainsItem(LSQHashSetRef self, LSQHashSetElement element)
 {
-    if (self && self->vtable->is_member != NULL)
+    assert(self != NULL);
+    if (self->vtable->is_member != NULL)
     {
         return self->vtable->is_member(self, element);
     }
@@ -510,7 +511,8 @@ Boolean LSQHashSetContainsItem(LSQHashSetRef self, LSQHashSetElement element)
 
 void LSQHashSetIterate(LSQHashSetRef self, LSQHashSetBlock block)
 {
-    if (self && self->vtable->iterate != NULL)
+    assert(self != NULL);
+    if (self->vtable->iterate != NULL)
     {
         return self->vtable->iterate(self, block, 0);
     }
@@ -518,7 +520,8 @@ void LSQHashSetIterate(LSQHashSetRef self, LSQHashSetBlock block)
 
 void LSQHashSetIterateSync(LSQHashSetRef self, LSQHashSetBlock block)
 {
-    if (self && self->vtable->iterate != NULL)
+    assert(self != NULL);
+    if (self->vtable->iterate != NULL)
     {
         return self->vtable->iterate(self, block, 1);
     }
@@ -526,7 +529,8 @@ void LSQHashSetIterateSync(LSQHashSetRef self, LSQHashSetBlock block)
 
 void LSQHashSetIterateAsync(LSQHashSetRef self, LSQHashSetBlock block)
 {
-    if (self && self->vtable->iterate != NULL)
+    assert(self != NULL);
+    if (self->vtable->iterate != NULL)
     {
         return self->vtable->iterate(self, block, 2);
     }
