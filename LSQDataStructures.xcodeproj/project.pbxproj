@@ -456,12 +456,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DSTROOT = /tmp/LSQDataStructures.dst;
+				GCC_FAST_MATH = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Code/LSQDataStructures-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_MASTER_OBJECT_FILE = YES;
+				LLVM_LTO = NO;
 				OTHER_CFLAGS = (
 					"-DTARGET_OS_IPHONE",
 					"-DDEBUG",
@@ -475,12 +477,15 @@
 		00634B8D197F09DD003E4BB0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				DSTROOT = /tmp/LSQDataStructures.dst;
+				GCC_FAST_MATH = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Code/LSQDataStructures-Prefix.pch";
 				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_MASTER_OBJECT_FILE = YES;
+				LLVM_LTO = YES;
 				OTHER_CFLAGS = (
 					"-DTARGET_OS_IPHONE",
 					"-DNDEBUG",
