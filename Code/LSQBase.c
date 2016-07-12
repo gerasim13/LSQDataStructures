@@ -24,7 +24,7 @@ typedef struct LSQBaseType
 
 #pragma mark - Base Functions
 
-LSQBaseTypeRef NewLSQBaseType(LSQBaseVtableRef vtable, void(*dealloc_callback)(void*))
+LSQBaseTypeRef NewLSQBaseType(LSQBaseVtableRef vtable, LSQBaseDeallocCallback dealloc_callback)
 {
     // Allocate memory
     LSQBaseType *self = LSQAllocatorAllocType(LSQBaseType);

@@ -9,9 +9,11 @@
 #ifndef LSQDataStructures_LSQArray_h
 #define LSQDataStructures_LSQArray_h
 
-#import <CoreFoundation/CoreFoundation.h>
-#import <Block.h>
-#import "LSQNode.h"
+//________________________________________________________________________________________
+
+#include <CoreFoundation/CoreFoundation.h>
+#include <Block.h>
+#include "LSQNode.h"
 
 //________________________________________________________________________________________
 

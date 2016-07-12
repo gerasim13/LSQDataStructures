@@ -9,8 +9,10 @@
 #ifndef LSQDataStructures_LSQHashMap_h
 #define LSQDataStructures_LSQHashMap_h
 
-#import <CoreFoundation/CoreFoundation.h>
-#import "LSQBase.h"
+//________________________________________________________________________________________
+
+#include <CoreFoundation/CoreFoundation.h>
+#include "LSQBase.h"
 
 //________________________________________________________________________________________
 

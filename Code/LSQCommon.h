@@ -9,11 +9,11 @@
 #ifndef LSQWheelView_LSQCommon_h
 #define LSQWheelView_LSQCommon_h
 
-#import <CoreFoundation/CoreFoundation.h>
-#import <CoreGraphics/CoreGraphics.h>
-#import <libkern/OSAtomic.h>
-#import <math.h>
-#import "MacTypes.h"
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreGraphics/CoreGraphics.h>
+#include <libkern/OSAtomic.h>
+#include <math.h>
+#include "MacTypes.h"
 
 //________________________________________________________________________________________
 

@@ -10,13 +10,13 @@
 
 CF_EXTERN_C_BEGIN
 
-#import "LSQCommon.h"
-#import "LSQAllocator.h"
-#import "LSQBase.h"
-#import "LSQNode.h"
-#import "LSQArray.h"
-#import "LSQQueue.h"
-#import "LSQHashMap.h"
-#import "LSQHashSet.h"
+#include "LSQCommon.h"
+#include "LSQAllocator.h"
+#include "LSQBase.h"
+#include "LSQNode.h"
+#include "LSQArray.h"
+#include "LSQQueue.h"
+#include "LSQHashMap.h"
+#include "LSQHashSet.h"
 
 CF_EXTERN_C_END

@@ -9,9 +9,9 @@
 #ifndef LSQDataStructures_LSQNode_h
 #define LSQDataStructures_LSQNode_h
 
-#import <CoreFoundation/CoreFoundation.h>
-#import <CoreGraphics/CoreGraphics.h>
-#import "LSQBase.h"
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreGraphics/CoreGraphics.h>
+#include "LSQBase.h"
 
 //________________________________________________________________________________________
 
