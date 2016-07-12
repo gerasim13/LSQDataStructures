@@ -268,7 +268,14 @@ OSStatus array_get_node(LSQArrayRef self, CFIndex index, LSQNodeRef* outNode)
     }
     // Get node
     *outNode = self->data.elements[index];
-    LSQNodeSetIndex(*outNode, index);
+    if (*outNode)
+    {
+        LSQNodeSetIndex(*outNode, index);
+    }
+    else
+    {
+        status = -1;
+    }
     return status;
 }
 

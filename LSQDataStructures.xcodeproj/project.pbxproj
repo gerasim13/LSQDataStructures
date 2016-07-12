@@ -398,6 +398,7 @@
 					"DEBUG=1",
 					"USE_DL_PREFIX=1",
 					"REALLOC_ZERO_BYTES_FREES=1",
+					"FULLSANITYCHECKS=1",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -467,6 +468,7 @@
 				OTHER_CFLAGS = (
 					"-DTARGET_OS_IPHONE",
 					"-DDEBUG",
+					"-DFULLSANITYCHECKS",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
