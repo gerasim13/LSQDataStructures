@@ -110,7 +110,7 @@ LSQNodeRef NewLSQNode(void *content, LSQBaseVtableRef vtable)
     node->data.content = content;
     node->data.back    = NULL;
     node->data.front   = NULL;
-    node->data.index   = NAN;
+    node->data.index   = -1;
     // Return node with data
     return node;
 }
