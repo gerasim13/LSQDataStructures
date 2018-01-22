@@ -35,10 +35,10 @@ typedef struct LSQHashMap_Data
 
 #pragma mark - Functions
 
-CF_EXPORT LSQHashMapRef NewLSQHashMap (); // Constructor
+CF_EXPORT LSQHashMapRef NewLSQHashMap (void);             // Constructor
 CF_EXPORT LSQHashMapRef LSQHashMapRetain (LSQHashMapRef); // Retain
-CF_EXPORT void LSQHashMapRelease (LSQHashMapRef); // Release
-CF_EXPORT void LSQHashMapDealloc (LSQHashMapRef); // Free memory
+CF_EXPORT void LSQHashMapRelease (LSQHashMapRef);         // Release
+CF_EXPORT void LSQHashMapDealloc (LSQHashMapRef);         // Free memory
 
 //________________________________________________________________________________________
 
