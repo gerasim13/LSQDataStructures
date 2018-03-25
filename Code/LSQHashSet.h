@@ -57,7 +57,7 @@ typedef const struct LSQHashSetVtable
 
 #pragma mark - Functions
 
-CF_EXPORT              LSQHashSetRef NewLSQHashSet         ();                 // Constructor
+CF_EXPORT              LSQHashSetRef NewLSQHashSet         (void);             // Constructor
 CF_EXPORT NO_NULL(1)   LSQHashSetRef LSQHashSetRetain      (LSQHashSetRef);    // Retain
 CF_EXPORT NO_NULL(1)   void          LSQHashSetRelease     (LSQHashSetRef);    // Release
 CF_EXPORT NO_NULL(1)   void          LSQHashSetDealloc     (LSQHashSetRef);    // Free memory
