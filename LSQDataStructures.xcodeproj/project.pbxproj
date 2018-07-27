@@ -33,11 +33,11 @@
 		00634BE0197F1086003E4BB0 /* LSQHashSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB0197F0A38003E4BB0 /* LSQHashSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00634BE1197F1086003E4BB0 /* LSQNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB2197F0A38003E4BB0 /* LSQNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00634BE2197F1086003E4BB0 /* LSQQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BB4197F0A38003E4BB0 /* LSQQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		00634BE8197F14BD003E4BB0 /* LSQAllocator.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BE6197F14BD003E4BB0 /* LSQAllocator.c */; };
 		00634BE9197F14BD003E4BB0 /* LSQAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BE7197F14BD003E4BB0 /* LSQAllocator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00634BED197F14CA003E4BB0 /* malloc.c.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEA197F14CA003E4BB0 /* malloc.c.h */; };
 		00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BEB197F14CA003E4BB0 /* nedmalloc.c */; settings = {COMPILER_FLAGS = "-Wno-implicit -Wno-pointer-bool-conversion"; }; };
 		00634BEF197F14CA003E4BB0 /* nedmalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEC197F14CA003E4BB0 /* nedmalloc.h */; };
+		00EF1038210B256D00995ADD /* LSQAllocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EF1037210B256D00995ADD /* LSQAllocator.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,11 +90,11 @@
 		00634BC4197F0A59003E4BB0 /* LSQNodeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LSQNodeTest.m; path = Tests/LSQNodeTest.m; sourceTree = SOURCE_ROOT; };
 		00634BC5197F0A59003E4BB0 /* LSQQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LSQQueueTest.m; path = Tests/LSQQueueTest.m; sourceTree = SOURCE_ROOT; };
 		00634BCE197F0A71003E4BB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Tests/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
-		00634BE6197F14BD003E4BB0 /* LSQAllocator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQAllocator.c; path = Libraries/LSQLocklessAllocator/LSQAllocator.c; sourceTree = "<group>"; };
 		00634BE7197F14BD003E4BB0 /* LSQAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSQAllocator.h; path = Libraries/LSQLocklessAllocator/LSQAllocator.h; sourceTree = "<group>"; };
 		00634BEA197F14CA003E4BB0 /* malloc.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = malloc.c.h; path = Libraries/LSQLocklessAllocator/nedmalloc/malloc.c.h; sourceTree = "<group>"; };
 		00634BEB197F14CA003E4BB0 /* nedmalloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nedmalloc.c; path = Libraries/LSQLocklessAllocator/nedmalloc/nedmalloc.c; sourceTree = "<group>"; };
 		00634BEC197F14CA003E4BB0 /* nedmalloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nedmalloc.h; path = Libraries/LSQLocklessAllocator/nedmalloc/nedmalloc.h; sourceTree = "<group>"; };
+		00EF1037210B256D00995ADD /* LSQAllocator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LSQAllocator.cpp; path = Libraries/LSQLocklessAllocator/LSQAllocator.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,8 +190,7 @@
 				00634BC5197F0A59003E4BB0 /* LSQQueueTest.m */,
 				00634B82197F09DD003E4BB0 /* Supporting Files */,
 			);
-			name = Tests;
-			path = LSQDataStructuresTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		00634B82197F09DD003E4BB0 /* Supporting Files */ = {
@@ -214,8 +213,8 @@
 		00634BE5197F14B2003E4BB0 /* LSQLocklessAllocator */ = {
 			isa = PBXGroup;
 			children = (
+				00EF1037210B256D00995ADD /* LSQAllocator.cpp */,
 				00634BE7197F14BD003E4BB0 /* LSQAllocator.h */,
-				00634BE6197F14BD003E4BB0 /* LSQAllocator.c */,
 				00634BEA197F14CA003E4BB0 /* malloc.c.h */,
 				00634BEC197F14CA003E4BB0 /* nedmalloc.h */,
 				00634BEB197F14CA003E4BB0 /* nedmalloc.c */,
@@ -329,10 +328,10 @@
 			files = (
 				00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */,
 				00634BBC197F0A38003E4BB0 /* LSQQueue.c in Sources */,
+				00EF1038210B256D00995ADD /* LSQAllocator.cpp in Sources */,
 				00634BBB197F0A38003E4BB0 /* LSQNode.c in Sources */,
 				00634BB7197F0A38003E4BB0 /* LSQBase.c in Sources */,
 				00634BB9197F0A38003E4BB0 /* LSQHashMap.c in Sources */,
-				00634BE8197F14BD003E4BB0 /* LSQAllocator.c in Sources */,
 				00634BB6197F0A38003E4BB0 /* LSQArray.c in Sources */,
 				00634BBA197F0A38003E4BB0 /* LSQHashSet.c in Sources */,
 			);
