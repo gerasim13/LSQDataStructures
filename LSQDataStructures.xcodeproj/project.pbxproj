@@ -37,7 +37,7 @@
 		00634BED197F14CA003E4BB0 /* malloc.c.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEA197F14CA003E4BB0 /* malloc.c.h */; };
 		00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 00634BEB197F14CA003E4BB0 /* nedmalloc.c */; settings = {COMPILER_FLAGS = "-Wno-implicit -Wno-pointer-bool-conversion"; }; };
 		00634BEF197F14CA003E4BB0 /* nedmalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 00634BEC197F14CA003E4BB0 /* nedmalloc.h */; };
-		00EF1038210B256D00995ADD /* LSQAllocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EF1037210B256D00995ADD /* LSQAllocator.cpp */; };
+		00EF1038210B256D00995ADD /* LSQAllocator.c in Sources */ = {isa = PBXBuildFile; fileRef = 00EF1037210B256D00995ADD /* LSQAllocator.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,7 +94,7 @@
 		00634BEA197F14CA003E4BB0 /* malloc.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = malloc.c.h; path = Libraries/LSQLocklessAllocator/nedmalloc/malloc.c.h; sourceTree = "<group>"; };
 		00634BEB197F14CA003E4BB0 /* nedmalloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nedmalloc.c; path = Libraries/LSQLocklessAllocator/nedmalloc/nedmalloc.c; sourceTree = "<group>"; };
 		00634BEC197F14CA003E4BB0 /* nedmalloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nedmalloc.h; path = Libraries/LSQLocklessAllocator/nedmalloc/nedmalloc.h; sourceTree = "<group>"; };
-		00EF1037210B256D00995ADD /* LSQAllocator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LSQAllocator.cpp; path = Libraries/LSQLocklessAllocator/LSQAllocator.cpp; sourceTree = "<group>"; };
+		00EF1037210B256D00995ADD /* LSQAllocator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LSQAllocator.c; path = Libraries/LSQLocklessAllocator/LSQAllocator.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -213,7 +213,7 @@
 		00634BE5197F14B2003E4BB0 /* LSQLocklessAllocator */ = {
 			isa = PBXGroup;
 			children = (
-				00EF1037210B256D00995ADD /* LSQAllocator.cpp */,
+				00EF1037210B256D00995ADD /* LSQAllocator.c */,
 				00634BE7197F14BD003E4BB0 /* LSQAllocator.h */,
 				00634BEA197F14CA003E4BB0 /* malloc.c.h */,
 				00634BEC197F14CA003E4BB0 /* nedmalloc.h */,
@@ -328,7 +328,7 @@
 			files = (
 				00634BEE197F14CA003E4BB0 /* nedmalloc.c in Sources */,
 				00634BBC197F0A38003E4BB0 /* LSQQueue.c in Sources */,
-				00EF1038210B256D00995ADD /* LSQAllocator.cpp in Sources */,
+				00EF1038210B256D00995ADD /* LSQAllocator.c in Sources */,
 				00634BBB197F0A38003E4BB0 /* LSQNode.c in Sources */,
 				00634BB7197F0A38003E4BB0 /* LSQBase.c in Sources */,
 				00634BB9197F0A38003E4BB0 /* LSQHashMap.c in Sources */,
@@ -487,10 +487,7 @@
 				GCC_FAST_MATH = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Code/LSQDataStructures-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"USE_DEFAULT_ALLOCATOR=1",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_MASTER_OBJECT_FILE = YES;
@@ -520,7 +517,6 @@
 					"USE_DL_PREFIX=1",
 					"REALLOC_ZERO_BYTES_FREES=1",
 					NS_BLOCK_ASSERTIONS,
-					"USE_DEFAULT_ALLOCATOR=1",
 				);
 				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_PEDANTIC = NO;
