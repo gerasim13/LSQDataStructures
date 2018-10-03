@@ -31,38 +31,38 @@ CF_EXPORT const struct LSQBaseVtable kLSQNodeVtableCGPath;
 // Node data
 typedef struct LSQNode_Data
 {
-    void*       content; // Data container
-    LSQNodeRef  front;   // Front node
-    LSQNodeRef  back;    // Back node
-    CFIndex     index;   // Node index
+    void*      _Nonnull  content; // Data container
+    LSQNodeRef _Nullable front;   // Front node
+    LSQNodeRef _Nullable back;    // Back node
+    CFIndex              index;   // Node index
 } LSQNode_Data;
 
 //________________________________________________________________________________________
 
 #pragma mark - Functions
 
-CF_EXPORT NO_NULL(1) LSQNodeRef     NewLSQNode         (void *content, LSQBaseVtableRef); // Constructor
-CF_EXPORT NO_NULL(1) void           LSQNodeDealloc     (LSQNodeRef);                      // Dealloc node
-CF_EXPORT NO_NULL(1) void*          LSQNodeRetain      (LSQNodeRef);                      // Retain node and content
-CF_EXPORT NO_NULL(1) void           LSQNodeRelease     (LSQNodeRef);                      // Release node and contenr
-CF_EXPORT NO_NULL(1) int32_t        LSQNodeGetRefCount (LSQNodeRef);                      // Get ref count
-CF_EXPORT NO_NULL(1) void*          LSQNodeGetContent  (LSQNodeRef);                      // Get node content
-CF_EXPORT NO_NULL(1) LSQBaseTypeRef LSQNodeGetBase     (LSQNodeRef);                      // Get base ref
-CF_EXPORT NO_NULL(1) CFIndex        LSQNodeGetIndex    (LSQNodeRef);                      // Get node index
-CF_EXPORT NO_NULL(1) void           LSQNodeSetIndex    (LSQNodeRef, CFIndex);             // Set node index
-CF_EXPORT NO_NULL(1) LSQNodeRef     LSQNodeGetFront    (LSQNodeRef);                      // Get front node
-CF_EXPORT NO_NULL(1) bool           LSQNodeSetFront    (LSQNodeRef, LSQNodeRef);          // Set front node
-CF_EXPORT NO_NULL(1) LSQNodeRef     LSQNodeGetBack     (LSQNodeRef);                      // Get back index
-CF_EXPORT NO_NULL(1) bool           LSQNodeSetBack     (LSQNodeRef, LSQNodeRef);          // Set back node
-CF_EXPORT NO_NULL(1) bool           LSQNodeSetFrontBack(LSQNodeRef, LSQNodeRef);          // Set front and back node
-CF_EXPORT NO_NULL(1) bool           LSQNodeSetBackFront(LSQNodeRef, LSQNodeRef);          // Set back and front node
+CF_EXPORT NO_NULL(1) LSQNodeRef     _Nonnull NewLSQNode         (void * _Nonnull content, LSQBaseVtableRef _Nonnull);  // Constructor
+CF_EXPORT NO_NULL(1) void                    LSQNodeDealloc     (LSQNodeRef _Nonnull);                       // Dealloc node
+CF_EXPORT NO_NULL(1) void*          _Nonnull LSQNodeRetain      (LSQNodeRef _Nonnull);                       // Retain node and content
+CF_EXPORT NO_NULL(1) void                    LSQNodeRelease     (LSQNodeRef _Nonnull);                       // Release node and contenr
+CF_EXPORT NO_NULL(1) int32_t                 LSQNodeGetRefCount (LSQNodeRef _Nonnull);                       // Get ref count
+CF_EXPORT NO_NULL(1) void*          _Nonnull LSQNodeGetContent  (LSQNodeRef _Nonnull);                       // Get node content
+CF_EXPORT NO_NULL(1) LSQBaseTypeRef _Nonnull LSQNodeGetBase     (LSQNodeRef _Nonnull);                       // Get base ref
+CF_EXPORT NO_NULL(1) CFIndex                 LSQNodeGetIndex    (LSQNodeRef _Nonnull);                       // Get node index
+CF_EXPORT NO_NULL(1) void                    LSQNodeSetIndex    (LSQNodeRef _Nonnull, CFIndex);              // Set node index
+CF_EXPORT NO_NULL(1) LSQNodeRef     _Nonnull LSQNodeGetFront    (LSQNodeRef _Nonnull);                       // Get front node
+CF_EXPORT NO_NULL(1) bool                    LSQNodeSetFront    (LSQNodeRef _Nonnull, LSQNodeRef _Nullable); // Set front node
+CF_EXPORT NO_NULL(1) LSQNodeRef     _Nonnull LSQNodeGetBack     (LSQNodeRef _Nonnull);                       // Get back index
+CF_EXPORT NO_NULL(1) bool                    LSQNodeSetBack     (LSQNodeRef _Nonnull, LSQNodeRef _Nullable); // Set back node
+CF_EXPORT NO_NULL(1) bool                    LSQNodeSetFrontBack(LSQNodeRef _Nonnull, LSQNodeRef _Nullable); // Set front and back node
+CF_EXPORT NO_NULL(1) bool                    LSQNodeSetBackFront(LSQNodeRef _Nonnull, LSQNodeRef _Nullable); // Set back and front node
 
 //________________________________________________________________________________________
 
 #pragma mark - CoreFoundation Callbacks
 
-const void * LSQNodeRetainCallBack (CFAllocatorRef allocator, const void *value);
-void         LSQNodeReleaseCallBack(CFAllocatorRef allocator, const void *value);
+const void * _Nonnull LSQNodeRetainCallBack (CFAllocatorRef _Nonnull allocator, const void * _Nonnull value);
+void                  LSQNodeReleaseCallBack(CFAllocatorRef _Nonnull allocator, const void * _Nonnull value);
 
 //________________________________________________________________________________________
 

@@ -165,7 +165,7 @@ LSQNodeRef LSQNodeGetFront(LSQNodeRef self)
     return self->data.front;
 }
 
-bool LSQNodeSetFront(LSQNodeRef self, LSQNodeRef node)
+bool LSQNodeSetFront(LSQNodeRef self, LSQNodeRef __nullable node)
 {
     return ATOMICSWAP_PTR(self->data.front, node);
 }
@@ -175,17 +175,17 @@ LSQNodeRef LSQNodeGetBack(LSQNodeRef self)
     return self->data.back;
 }
 
-bool LSQNodeSetBack(LSQNodeRef self, LSQNodeRef node)
+bool LSQNodeSetBack(LSQNodeRef self, LSQNodeRef __nullable node)
 {
     return ATOMICSWAP_PTR(self->data.back, node);
 }
 
-bool LSQNodeSetFrontBack(LSQNodeRef self, LSQNodeRef node)
+bool LSQNodeSetFrontBack(LSQNodeRef self, LSQNodeRef __nullable node)
 {
     return LSQNodeSetFront(self, node) && LSQNodeSetBack(self, node);
 }
 
-bool LSQNodeSetBackFront(LSQNodeRef self, LSQNodeRef node)
+bool LSQNodeSetBackFront(LSQNodeRef self, LSQNodeRef __nullable node)
 {
     return LSQNodeSetBack(self, node) && LSQNodeSetFront(self, node);
 }

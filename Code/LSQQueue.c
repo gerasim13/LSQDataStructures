@@ -139,10 +139,9 @@ bool try_push_front(LSQQueueRef queue, LSQNodeRef node)
     LSQNodeRef prev;
     // Try to add item to head
     bool success = false;
-    while (!success)
+    while (!success && (head = queue->data.head))
     {
-        head = queue->data.head;
-        prev = head ? LSQNodeGetBack(head) : NULL;
+        prev = LSQNodeGetBack(head);
         // Was Head pointing to the first node?
         if (prev == NULL)
         {
