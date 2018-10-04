@@ -176,18 +176,18 @@ LSQNodeRef LSQNodeGetBack(LSQNodeRef self)
     return self->data.back;
 }
 
-bool LSQNodeSetBack(LSQNodeRef self, LSQNodeRef __nullable node)
+bool LSQNodeSetBack(LSQNodeRef self, LSQNodeRef node)
 {
     LSQNodeRef current_back = atomic_load_explicit(&self->data.back, memory_order_acquire);
     return atomic_compare_exchange_strong_explicit(&self->data.back, &current_back, node, memory_order_release, memory_order_seq_cst);
 }
 
-bool LSQNodeSetFrontBack(LSQNodeRef self, LSQNodeRef __nullable node)
+bool LSQNodeSetFrontBack(LSQNodeRef self, LSQNodeRef node)
 {
     return LSQNodeSetFront(self, node) && LSQNodeSetBack(self, node);
 }
 
-bool LSQNodeSetBackFront(LSQNodeRef self, LSQNodeRef __nullable node)
+bool LSQNodeSetBackFront(LSQNodeRef self, LSQNodeRef node)
 {
     return LSQNodeSetBack(self, node) && LSQNodeSetFront(self, node);
 }
