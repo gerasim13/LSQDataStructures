@@ -215,7 +215,7 @@ bool try_pop_front(LSQQueueRef queue, LSQNodeRef* node)
             // Tail is falling behind. Try to advance it
             atomic_exchange_explicit(&queue->data.tail, next, memory_order_release);
         }
-        else
+        else if (next)
         {
             *node = head;
             // Try to swing Head to the next node
