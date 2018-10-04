@@ -15,8 +15,8 @@
 
 typedef struct LSQNode
 {
-    LSQBaseTypeRef base;
-    LSQNode_Data   data;
+    LSQBaseTypeRef _Atomic base;
+    LSQNode_Data           data;
 } LSQNode;
 
 //________________________________________________________________________________________
@@ -117,7 +117,7 @@ LSQNodeRef NewLSQNode(void *content, LSQBaseVtableRef vtable)
 
 void* LSQNodeRetain(LSQNodeRef self)
 {
-    ATOMICSWAP_PTR(self->base, LSQBaseRetain(self->base));
+    atomic_exchange_explicit(&self->base, LSQBaseRetain(self->base), memory_order_release);
     return self;
 }
 
@@ -128,10 +128,10 @@ void LSQNodeRelease(LSQNodeRef self)
 
 void LSQNodeDealloc(LSQNodeRef self)
 {
-    ATOMICSWAP_PTR(self->data.back, NULL);
-    ATOMICSWAP_PTR(self->data.front, NULL);
-    ATOMICSWAP_PTR(self->data.content, NULL);
-    ATOMICSWAP_PTR(self->base, NULL);
+    atomic_exchange_explicit(&self->data.back, NULL, memory_order_release);
+    atomic_exchange_explicit(&self->data.front, NULL, memory_order_release);
+    atomic_exchange_explicit(&self->data.content, NULL, memory_order_release);
+    atomic_exchange_explicit(&self->base, NULL, memory_order_release);
     LSQAllocatorDealloc(self);
 }
 
@@ -157,7 +157,7 @@ CFIndex LSQNodeGetIndex(LSQNodeRef self)
 
 void LSQNodeSetIndex(LSQNodeRef self, CFIndex index)
 {
-    ATOMICSWAP_LONG(self->data.index, index);
+    atomic_store_explicit(&self->data.index, index, memory_order_release);
 }
 
 LSQNodeRef LSQNodeGetFront(LSQNodeRef self)
@@ -167,7 +167,8 @@ LSQNodeRef LSQNodeGetFront(LSQNodeRef self)
 
 bool LSQNodeSetFront(LSQNodeRef self, LSQNodeRef __nullable node)
 {
-    return ATOMICSWAP_PTR(self->data.front, node);
+    LSQNodeRef current_front = atomic_load_explicit(&self->data.front, memory_order_acquire);
+    return atomic_compare_exchange_strong_explicit(&self->data.front, &current_front, node, memory_order_release, memory_order_seq_cst);
 }
 
 LSQNodeRef LSQNodeGetBack(LSQNodeRef self)
@@ -177,7 +178,8 @@ LSQNodeRef LSQNodeGetBack(LSQNodeRef self)
 
 bool LSQNodeSetBack(LSQNodeRef self, LSQNodeRef __nullable node)
 {
-    return ATOMICSWAP_PTR(self->data.back, node);
+    LSQNodeRef current_back = atomic_load_explicit(&self->data.back, memory_order_acquire);
+    return atomic_compare_exchange_strong_explicit(&self->data.back, &current_back, node, memory_order_release, memory_order_seq_cst);
 }
 
 bool LSQNodeSetFrontBack(LSQNodeRef self, LSQNodeRef __nullable node)

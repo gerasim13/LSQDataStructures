@@ -16,10 +16,10 @@
 // Array data
 typedef struct LSQQueue
 {
-    LSQBaseTypeRef    base;
-    LSQBaseVtableRef  callbacks;
-    LSQQueueVtableRef vtable;
-    LSQQueue_Data     data;
+    LSQBaseTypeRef _Atomic base;
+    LSQBaseVtableRef       callbacks;
+    LSQQueueVtableRef      vtable;
+    LSQQueue_Data          data;
 } LSQQueue;
 
 // Error codes
@@ -103,7 +103,11 @@ OSStatus get_node_check(LSQQueueRef queue, CFIndex index)
 
 bool try_push_first_element(LSQQueueRef queue, LSQNodeRef node)
 {
-    return ATOMICSWAP_PTR(queue->data.head, node) && ATOMICSWAP_PTR(queue->data.tail, node);
+    LSQNodeRef current_head = atomic_load_explicit(&queue->data.head, memory_order_acquire);
+    LSQNodeRef current_tail = atomic_load_explicit(&queue->data.tail, memory_order_acquire);
+    bool head_success = atomic_compare_exchange_strong_explicit(&queue->data.head, &current_head, node, memory_order_release, memory_order_seq_cst);
+    bool tail_success = atomic_compare_exchange_strong_explicit(&queue->data.tail, &current_tail, node, memory_order_release, memory_order_seq_cst);
+    return head_success && tail_success;
 }
 
 bool try_push_back(LSQQueueRef queue, LSQNodeRef node)
@@ -114,7 +118,7 @@ bool try_push_back(LSQQueueRef queue, LSQNodeRef node)
     bool success = false;
     while (!success)
     {
-        tail = queue->data.tail;
+        tail = atomic_load_explicit(&queue->data.tail, memory_order_acquire);
         next = LSQNodeGetFront(tail);
         // Was Tail pointing to the last node?
         if (next == NULL)
@@ -126,11 +130,20 @@ bool try_push_back(LSQQueueRef queue, LSQNodeRef node)
         {
             // Tail was not pointing to the last node
             // Try to swing Tail to the next node
-            success = ATOMICSWAP_PTR(queue->data.tail, next);
+            success = atomic_compare_exchange_strong_explicit(&queue->data.tail,
+                                                              &tail,
+                                                              next,
+                                                              memory_order_release,
+                                                              memory_order_seq_cst);
         }
     }
     // Enqueue is done. Try to swing Tail to the inserted node
-    return ATOMICSWAP_PTR(queue->data.tail, node);
+    LSQNodeRef current_tail = atomic_load_explicit(&queue->data.tail, memory_order_acquire);
+    return atomic_compare_exchange_strong_explicit(&queue->data.tail,
+                                                   &current_tail,
+                                                   node,
+                                                   memory_order_release,
+                                                   memory_order_seq_cst);
 }
 
 bool try_push_front(LSQQueueRef queue, LSQNodeRef node)
@@ -139,7 +152,7 @@ bool try_push_front(LSQQueueRef queue, LSQNodeRef node)
     LSQNodeRef prev;
     // Try to add item to head
     bool success = false;
-    while (!success && (head = queue->data.head))
+    while (!success && (head = atomic_load_explicit(&queue->data.head, memory_order_acquire)))
     {
         prev = LSQNodeGetBack(head);
         // Was Head pointing to the first node?
@@ -152,11 +165,20 @@ bool try_push_front(LSQQueueRef queue, LSQNodeRef node)
         {
             // Head was not pointing to the first node
             // Try to swing Head to the start node
-            success = ATOMICSWAP_PTR(queue->data.head, prev);
+            success = atomic_compare_exchange_strong_explicit(&queue->data.head,
+                                                              &head,
+                                                              prev,
+                                                              memory_order_release,
+                                                              memory_order_seq_cst);
         }
     }
     // Enqueue is done. Try to swing Head to the inserted node
-    return ATOMICSWAP_PTR(queue->data.head, node);
+    LSQNodeRef current_head = atomic_load_explicit(&queue->data.head, memory_order_acquire);
+    return atomic_compare_exchange_strong_explicit(&queue->data.head,
+                                                   &current_head,
+                                                   node,
+                                                   memory_order_release,
+                                                   memory_order_seq_cst);
 }
 
 bool try_pop_front(LSQQueueRef queue, LSQNodeRef* node)
@@ -169,8 +191,8 @@ bool try_pop_front(LSQQueueRef queue, LSQNodeRef* node)
     bool success = false;
     while (!success)
     {
-        tail = queue->data.tail;
-        head = queue->data.head;
+        tail = atomic_load_explicit(&queue->data.tail, memory_order_acquire);
+        head = atomic_load_explicit(&queue->data.head, memory_order_acquire);
         next = head ? LSQNodeGetFront(head) : NULL;
         // Are head, tail, and next consistent?
         // Is queue empty or Tail falling behind?
@@ -181,7 +203,8 @@ bool try_pop_front(LSQQueueRef queue, LSQNodeRef* node)
                 // Queue contains last node
                 *node = head;
                 // Remove head and tail node
-                success = ATOMICSWAP_PTR(queue->data.tail, NULL) && ATOMICSWAP_PTR(queue->data.head, NULL);
+                success = (atomic_compare_exchange_strong_explicit(&queue->data.tail, &tail, NULL, memory_order_release, memory_order_seq_cst) &&
+                           atomic_compare_exchange_strong_explicit(&queue->data.head, &head, NULL, memory_order_release, memory_order_seq_cst));
                 break;
             }
             else if (next == NULL)
@@ -190,14 +213,15 @@ bool try_pop_front(LSQQueueRef queue, LSQNodeRef* node)
                 break;
             }
             // Tail is falling behind. Try to advance it
-            ATOMICSWAP_PTR(queue->data.tail, next);
+            atomic_exchange_explicit(&queue->data.tail, next, memory_order_release);
         }
         else
         {
             *node = head;
             // Try to swing Head to the next node
             // Set prev node of next to NULL
-            success = ATOMICSWAP_PTR(queue->data.head, next) && LSQNodeSetBack(next, NULL);
+            success = (atomic_compare_exchange_strong_explicit(&queue->data.head, &head, next, memory_order_release, memory_order_seq_cst) &&
+                       LSQNodeSetBack(next, NULL));
             break;
         }
     }
@@ -213,8 +237,8 @@ bool try_pop_back(LSQQueueRef queue, LSQNodeRef* node)
     bool success = false;
     while (!success)
     {
-        head = queue->data.head;
-        tail = queue->data.tail;
+        head = atomic_load_explicit(&queue->data.head, memory_order_acquire);
+        tail = atomic_load_explicit(&queue->data.tail, memory_order_acquire);
         prev = LSQNodeGetBack(tail);
         // Are head, tail, and next consistent?
         if (tail == queue->data.tail)
@@ -227,7 +251,8 @@ bool try_pop_back(LSQQueueRef queue, LSQNodeRef* node)
                     // Queue contains last node
                     *node = tail;
                     // Remove head and tail node
-                    success = ATOMICSWAP_PTR(queue->data.head, NULL) && ATOMICSWAP_PTR(queue->data.tail, NULL);
+                    success = (atomic_compare_exchange_strong_explicit(&queue->data.head, &head, NULL, memory_order_release, memory_order_seq_cst) &&
+                               atomic_compare_exchange_strong_explicit(&queue->data.tail, &tail, NULL, memory_order_release, memory_order_seq_cst));
                     break;
                 }
                 else if (prev == NULL)
@@ -236,14 +261,15 @@ bool try_pop_back(LSQQueueRef queue, LSQNodeRef* node)
                     break;
                 }
                 // Tail is falling behind. Try to advance it
-                ATOMICSWAP_PTR(queue->data.head, prev);
+                atomic_exchange_explicit(&queue->data.head, prev, memory_order_release);
             }
             else
             {
                 *node = tail;
                 // Try to swing Tail to the prev node
                 // Set next node of prev to NULL
-                success = ATOMICSWAP_PTR(queue->data.tail, prev) && LSQNodeSetFront(prev, NULL);
+                success = (atomic_compare_exchange_strong_explicit(&queue->data.tail, &tail, prev, memory_order_release, memory_order_seq_cst) &&
+                           LSQNodeSetFront(prev, NULL));
                 break;
             }
         }
@@ -253,12 +279,12 @@ bool try_pop_back(LSQQueueRef queue, LSQNodeRef* node)
 
 void increment_count(LSQQueueRef self)
 {
-    ATOMICINCREMENT_INT32(self->data.count);
+    atomic_fetch_add_explicit(&self->data.count, 1, memory_order_release);
 }
 
 void decrement_count(LSQQueueRef self)
 {
-    ATOMICDECRIMENT_INT32(self->data.count);
+    atomic_fetch_sub_explicit(&self->data.count, 1, memory_order_release);
 }
 
 LSQNodeRef search_for_node_at_index(LSQQueueRef self, CFIndex index)
@@ -442,7 +468,7 @@ LSQQueueRef NewLSQQueue(CFIndex capacity, LSQBaseVtableRef vtable)
 
 void* LSQQueueRetain(LSQQueueRef self)
 {
-    ATOMICSWAP_PTR(self->base, LSQBaseRetain(self->base));
+    atomic_exchange_explicit(&self->base, LSQBaseRetain(self->base), memory_order_release);
     return self;
 }
 
@@ -453,20 +479,21 @@ void LSQQueueRelease(LSQQueueRef self)
 
 void LSQQueueDealloc(LSQQueueRef self)
 {
-    LSQNodeRef node = self->data.head;
+    LSQNodeRef head = atomic_load_explicit(&self->data.head, memory_order_acquire);
+    LSQNodeRef tail = atomic_load_explicit(&self->data.tail, memory_order_acquire);
     // Set head and tail to NULL
-    if (ATOMICSWAP_PTR(self->data.tail, NULL) &&
-        ATOMICSWAP_PTR(self->data.head, NULL))
+    if (atomic_compare_exchange_strong_explicit(&self->data.tail, &tail, NULL, memory_order_release, memory_order_seq_cst) &&
+        atomic_compare_exchange_strong_explicit(&self->data.head, &head, NULL, memory_order_release, memory_order_seq_cst))
     {
         // Release nodes
-        while (node != NULL)
+        while (head != NULL)
         {
-            LSQNodeRef next = LSQNodeGetFront(node);
-            LSQNodeRelease(node);
-            node = next;
+            LSQNodeRef next = LSQNodeGetFront(head);
+            LSQNodeRelease(head);
+            head = next;
         }
     }
-    ATOMICSWAP_PTR(self->base, NULL);
+    atomic_exchange_explicit(&self->base, NULL, memory_order_release);
     LSQAllocatorDealloc(self);
 }
 

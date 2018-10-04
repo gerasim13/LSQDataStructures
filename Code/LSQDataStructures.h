@@ -14,7 +14,6 @@ CF_EXTERN_C_BEGIN
 #include "LSQAllocator.h"
 #include "LSQBase.h"
 #include "LSQNode.h"
-#include "LSQArray.h"
 #include "LSQQueue.h"
 
 CF_EXTERN_C_END

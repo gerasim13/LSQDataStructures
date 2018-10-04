@@ -39,7 +39,7 @@ LSQBaseTypeRef NewLSQBaseType(LSQBaseVtableRef vtable, LSQBaseDeallocCallback de
 
 void* LSQBaseRetain(LSQBaseTypeRef self)
 {
-    ATOMICINCREMENT_INT32(self->data.refcount);
+    atomic_fetch_add_explicit(&self->data.refcount, 1, memory_order_release);
     // Execute callback
     if (self->vtable != NULL && self->vtable->retain != NULL)
     {
@@ -51,7 +51,7 @@ void* LSQBaseRetain(LSQBaseTypeRef self)
 
 void LSQBaseRelease(LSQBaseTypeRef self)
 {
-    ATOMICDECRIMENT_INT32(self->data.refcount);
+    atomic_fetch_sub_explicit(&self->data.refcount, 1, memory_order_release);
     // Execute release callback
     if (self->vtable != NULL && self->vtable->release != NULL)
     {
@@ -70,7 +70,7 @@ void LSQBaseDealloc(LSQBaseTypeRef self)
     {
         self->data.dealloc(self->data.userdata);
     }
-    ATOMICSWAP_PTR(self->data.userdata, NULL);
+    atomic_exchange_explicit(&self->data.userdata, NULL, memory_order_release);
     LSQAllocatorDealloc(self);
 }
 
@@ -81,5 +81,5 @@ int32_t LSQBaseGetRefCount(LSQBaseTypeRef self)
 
 void LSQBaseSetUserdata(LSQBaseTypeRef self, void* data)
 {
-    ATOMICSWAP_PTR(self->data.userdata, data);
+    atomic_exchange_explicit(&self->data.userdata, data, memory_order_release);
 }

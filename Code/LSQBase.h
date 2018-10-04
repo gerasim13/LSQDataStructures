@@ -10,6 +10,7 @@
 #define LSQDataStructures_LSQBase_h
 
 #include <CoreFoundation/CoreFoundation.h>
+#include <stdatomic.h>
 #include "MacTypes.h"
 #include "LSQAllocator.h"
 
@@ -39,9 +40,9 @@ typedef void  (*LSQBaseDeallocCallback) (void*);
 // Ref counter and version
 typedef struct LSQBaseType_Data
 {
-    int32_t refcount;
-    int32_t version;
-    void*   userdata;                          // This will be passed into all callbacks
+    atomic_int_fast32_t refcount;
+    atomic_int_fast32_t version;
+    void * _Atomic      userdata;             // This will be passed into all callbacks
     LSQBaseDeallocCallback dealloc NO_NULL(1); // Dealloc callback
 } LSQBaseType_Data;
 

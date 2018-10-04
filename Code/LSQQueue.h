@@ -12,6 +12,7 @@
 //________________________________________________________________________________________
 
 #include <CoreFoundation/CoreFoundation.h>
+#include <stdatomic.h>
 #include <Block.h>
 #include "LSQNode.h"
 
@@ -31,10 +32,10 @@ typedef const struct LSQQueueVtable *LSQQueueVtableRef;
 // Array data
 typedef struct LSQQueue_Data
 {
-    int32_t    capacity; // Max number of elements
-    int32_t    count;    // Current number of elements
-    LSQNodeRef head;     // Head node
-    LSQNodeRef tail;     // Tail node
+    LSQNodeRef _Atomic  head;     // Head node
+    LSQNodeRef _Atomic  tail;     // Tail node
+    atomic_int_fast32_t capacity; // Max number of elements
+    atomic_int_fast32_t count;    // Current number of elements
 } LSQQueue_Data;
 
 // Private functions
