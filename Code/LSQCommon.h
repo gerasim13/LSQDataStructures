@@ -11,7 +11,6 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreGraphics/CoreGraphics.h>
-#include <libkern/OSAtomic.h>
 #include <math.h>
 #include "MacTypes.h"
 
