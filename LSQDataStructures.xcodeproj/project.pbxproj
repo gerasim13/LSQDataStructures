@@ -468,6 +468,7 @@
 					"-DTARGET_OS_IPHONE",
 					"-DDEBUG",
 					"-DFULLSANITYCHECKS",
+					"-DUSE_DEFAULT_ALLOCATOR=1",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -497,6 +498,7 @@
 				OTHER_CFLAGS = (
 					"-DTARGET_OS_IPHONE",
 					"-DNDEBUG",
+					"-DUSE_DEFAULT_ALLOCATOR=1",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
