@@ -384,6 +384,7 @@
 					"REALLOC_ZERO_BYTES_FREES=1",
 					"FULLSANITYCHECKS=1",
 					"USE_MAGIC_HEADERS=1",
+					"USE_LOCKS=1",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -437,6 +438,7 @@
 					"USE_DL_PREFIX=1",
 					"REALLOC_ZERO_BYTES_FREES=1",
 					"USE_MAGIC_HEADERS=1",
+					"USE_LOCKS=1",
 					"$(inherited)",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
